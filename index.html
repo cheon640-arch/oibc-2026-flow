@@ -1,0 +1,544 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>OIBC 2026 작업 플로우</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: architectural broadsheet on bone; the flowchart is the plate, details follow as hairline rows */
+:root{
+  --bone:#e8e6e0; --paper:#ffffff; --ink:#000000; --indigo:#1925aa; --deep:#0d1355;
+  --hair:rgba(0,0,0,.14); --hair-on-indigo:rgba(232,230,224,.28); --muted:rgba(0,0,0,.62);
+  --f-display:"Inter Tight","IBM Plex Sans KR",Inter,system-ui,sans-serif;
+  --f-body:"IBM Plex Sans KR","Inter Tight",system-ui,sans-serif;
+  --f-mono:"JetBrains Mono","IBM Plex Mono",ui-monospace,monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{background:var(--bone);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55}
+.band{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1200px;margin:0 auto}
+.mono{font-family:var(--f-mono);font-size:12px;letter-spacing:.02em;text-transform:uppercase}
+
+header.band{padding-block:18px;border-bottom:1px solid var(--hair)}
+header .wrap{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.mark{display:flex;align-items:center;gap:10px;color:var(--deep)}
+.mark i{width:12px;height:12px;background:var(--deep);display:block}
+header nav{display:flex;gap:18px;flex-wrap:wrap}
+header nav a{color:var(--ink);text-decoration:none}
+header nav a:hover,header nav a:focus-visible{color:var(--indigo)}
+
+.hero{padding-block:48px 8px;display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:40px;align-items:end}
+.hero h1{font-family:var(--f-display);font-weight:400;font-size:clamp(52px,9vw,120px);line-height:.94;letter-spacing:-.02em;margin:0}
+.hero h1 span{color:var(--indigo)}
+.hero p{font-size:17px;margin:0;max-width:52ch;text-wrap:pretty}
+
+/* pixel solar field */
+.pixel{margin-top:40px}
+.pixel canvas#field{display:block;width:100%;aspect-ratio:16/7;object-fit:cover;image-rendering:pixelated;background:var(--deep)}
+.pixel-bar{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:24px;align-items:center;border-bottom:1px solid var(--hair);padding-block:14px}
+.pixel-bar p{margin:6px 0 0;font-size:16px;max-width:56ch}
+.pixel-bar .mono{color:var(--muted)}
+.meter{display:flex;align-items:center;gap:18px}
+.meter div{display:flex;flex-direction:column;gap:2px}
+.meter b{font-family:var(--f-display);font-weight:400;font-size:44px;line-height:1;color:var(--indigo);font-variant-numeric:tabular-nums;min-width:3.4ch}
+#spark{width:200px;height:48px;display:block}
+
+/* flowchart plate */
+.plate{margin-top:40px;border-top:1px solid var(--ink);padding-top:12px}
+.plate-head{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;color:var(--muted)}
+.fc-scroll{overflow-x:auto;padding-block:20px 8px}
+.fc{display:block;width:100%;min-width:820px;height:auto}
+.fc .box{fill:var(--bone);stroke:var(--ink);stroke-width:1}
+.fc .box.in{fill:var(--paper);stroke:var(--hair)}
+.fc .box.out{fill:var(--paper);stroke:var(--ink)}
+.fc .box.key{fill:var(--indigo);stroke:var(--indigo)}
+.fc .num{font-family:var(--f-mono);font-size:14px;fill:var(--muted)}
+.fc .ttl{font-family:var(--f-display);font-size:22px;fill:var(--ink)}
+.fc .sub{font-family:var(--f-body);font-size:15px;fill:var(--muted)}
+.fc .in-t{font-family:var(--f-body);font-size:17px;font-weight:500;fill:var(--ink)}
+.fc .k .num,.fc .k .sub{fill:rgba(232,230,224,.8)}
+.fc .k .ttl,.fc .k .big{fill:var(--bone)}
+.fc .big{font-family:var(--f-body);font-size:16px;font-weight:500;fill:var(--ink)}
+.fc .ln{fill:none;stroke:var(--ink);stroke-width:1.3}
+.fc .ln.ix{stroke:var(--indigo);stroke-width:1.6}
+.fc .ln.dash{stroke:var(--indigo);stroke-dasharray:5 5;stroke-width:1.4}
+.fc .lbl{font-family:var(--f-body);font-size:14px;fill:var(--indigo)}
+.fc .lbl.ink{fill:var(--muted)}
+.fc .rail{stroke:var(--ink);stroke-width:1}
+.fc .phase{font-family:var(--f-mono);font-size:14px;letter-spacing:.04em;fill:var(--ink)}
+.fc .dia{fill:var(--paper);stroke:var(--indigo);stroke-width:1.6}
+.fc .dia-t{font-family:var(--f-body);font-size:17px;font-weight:500;fill:var(--indigo)}
+.fc .ar-ink{fill:var(--ink)} .fc .ar-ix{fill:var(--indigo)}
+.fc a .box{transition:stroke-width .15s}
+.fc a:hover .box,.fc a:focus-visible .box{stroke:var(--indigo);stroke-width:2.5}
+.fc a:focus{outline:none}
+.legend{display:flex;gap:22px;flex-wrap:wrap;color:var(--muted);padding-top:6px}
+.legend span{display:inline-flex;align-items:center;gap:8px}
+.legend i{width:12px;height:12px;display:inline-block;background:var(--indigo)}
+.legend i.o{background:var(--bone);border:1px solid var(--ink)}
+.legend i.d{width:22px;height:0;border-top:1.5px dashed var(--indigo);background:none}
+
+/* section heading pair */
+.split{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;padding-block:80px 24px;border-bottom:1px solid var(--hair)}
+.split h2{font-family:var(--f-display);font-weight:400;font-size:clamp(40px,8vw,104px);line-height:.94;letter-spacing:-.02em;margin:0;color:var(--indigo)}
+.split .mono{color:var(--muted);text-align:right;max-width:30ch}
+
+/* accordion */
+details{border-bottom:1px solid var(--hair);scroll-margin-top:16px}
+summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:56px minmax(0,1fr) auto;align-items:baseline;gap:16px;padding-block:20px}
+summary::-webkit-details-marker{display:none}
+summary .n{font-family:var(--f-mono);font-size:13px;color:var(--muted)}
+summary .t{font-family:var(--f-display);font-weight:500;font-size:24px;line-height:1.2;color:var(--indigo)}
+summary .t small{font-family:var(--f-body);font-weight:400;font-size:15px;color:var(--muted);margin-left:14px}
+summary .g{font-family:var(--f-display);font-size:24px;color:var(--indigo);transition:transform .2s}
+details[open] summary .g{transform:rotate(45deg)}
+summary:focus-visible{outline:2px solid var(--indigo);outline-offset:2px}
+.body{display:grid;grid-template-columns:56px minmax(0,1fr) minmax(0,1fr);gap:16px;padding-bottom:26px}
+.body > div{min-width:0}
+.body h4{margin:0 0 8px;font-family:var(--f-mono);font-weight:500;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.body ul{margin:0;padding-left:18px;display:grid;gap:6px}
+.body li{font-size:16px}
+.body .why{font-size:16px;margin:0 0 14px;max-width:56ch}
+.body .out{font-family:var(--f-mono);font-size:13px;line-height:1.6;background:var(--paper);padding:14px 16px}
+.tag{display:inline-block;font-family:var(--f-mono);font-size:11px;letter-spacing:.04em;text-transform:uppercase;background:var(--indigo);color:var(--bone);padding:2px 6px;vertical-align:middle;margin-left:10px}
+
+/* indigo band */
+.indigo{background:var(--indigo);color:var(--bone);margin-top:80px}
+.indigo .wrap{padding-block:72px}
+.indigo h2{font-family:var(--f-display);font-weight:400;font-size:clamp(32px,5vw,46px);line-height:1.1;margin:0 0 40px;max-width:22ch;text-wrap:balance}
+.pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border-top:1px solid var(--hair-on-indigo)}
+.pair > div{padding:24px 24px 8px 0;min-width:0}
+.pair > div + div{border-left:1px solid var(--hair-on-indigo);padding-left:24px}
+.pair .mono{color:rgba(232,230,224,.75)}
+.pair h3{font-family:var(--f-display);font-weight:400;font-size:30px;line-height:1.15;margin:8px 0 14px}
+.pair p{font-size:17px;margin:0 0 12px;max-width:52ch}
+.formula{font-size:15px;border:1px solid var(--hair-on-indigo);padding:12px 14px;margin-top:6px}
+
+/* schedule */
+.sched{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--hair);margin-top:28px}
+.sched > div{padding:18px 16px 18px 0;border-bottom:1px solid var(--hair);display:flex;flex-direction:column;gap:6px;min-width:0}
+.sched > div + div{padding-left:16px;border-left:1px solid var(--hair)}
+.sched b{font-family:var(--f-display);font-weight:400;font-size:28px;line-height:1;font-variant-numeric:tabular-nums}
+.sched .now b{color:var(--indigo)}
+.sched p{margin:0;font-size:15px}
+.rules{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin-top:40px}
+.rules div{min-width:0}
+.rules p{margin:6px 0 0;font-size:16px}
+footer.band{padding-block:56px 40px}
+footer p{margin:0;color:var(--muted);text-align:center}
+
+@media (max-width:760px){
+  .hero,.pair,.rules{grid-template-columns:1fr}
+  .hero{gap:20px}
+  .pixel-bar{grid-template-columns:1fr}
+  #spark{width:150px}
+  .pair > div + div{border-left:0;padding-left:0;border-top:1px solid var(--hair-on-indigo)}
+  .sched{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .sched > div:nth-child(3){padding-left:0;border-left:0}
+  summary{grid-template-columns:36px minmax(0,1fr) auto;gap:10px}
+  summary .t{font-size:21px}
+  summary .t small{display:block;margin:4px 0 0}
+  .body{grid-template-columns:1fr;padding-left:46px}
+  .body > .sp{display:none}
+  .split{flex-direction:column;align-items:flex-start}
+  .split .mono{text-align:left}
+}
+@media (prefers-reduced-motion:reduce){summary .g,.fc a .box{transition:none}}
+</style>
+</head>
+<body>
+
+<header class="band">
+  <div class="wrap">
+    <div class="mark mono"><i></i>OIBC Challenge 2026 / Team Flow</div>
+    <nav class="mono">
+      <a href="#flow">Flow</a><a href="#steps">Steps</a><a href="#core">Core</a><a href="#schedule">Schedule</a>
+    </nav>
+  </div>
+</header>
+
+<section class="band" id="flow">
+  <div class="wrap">
+    <div class="hero">
+      <h1>작업<br><span>흐름도</span></h1>
+      <p>받은 데이터로 시작해서 제출 파일 2개를 만들면 끝입니다. 중간의 05~08단계는 우리끼리 매긴 점수가 더 안 오를 때까지 여러 번 반복합니다. 상자를 누르면 그 단계 설명이 열립니다.</p>
+    </div>
+
+    <figure class="pixel" style="margin-inline:0;margin-bottom:0">
+      <canvas id="field" width="128" height="72" role="img" aria-label="태양광 발전소를 위에서 내려다본 픽셀아트. 구름 그림자가 지나가면 패널이 어두워지고 출력이 떨어진다."></canvas>
+      <figcaption class="pixel-bar">
+        <div>
+          <span class="mono">Fig. 0 / 구름 한 장이 지나가면</span>
+          <p>그림자가 덮은 패널만큼 발전량이 줄어듭니다. 이 변화를 하루 전에 맞히는 게 이번 대회입니다.</p>
+        </div>
+        <div class="meter">
+          <div><span class="mono">현재 출력</span><b id="pct">100%</b></div>
+          <canvas id="spark" width="400" height="96" aria-hidden="true"></canvas>
+        </div>
+      </figcaption>
+    </figure>
+
+    <div class="plate">
+      <div class="plate-head mono"><span>Fig. 1 / 전체 작업 순서</span><span>발전소 253곳 → 묶음 2개</span></div>
+      <div class="fc-scroll">
+        <svg class="fc" viewBox="0 0 1180 1330" role="img" aria-labelledby="fc-title">
+          <title id="fc-title">제공 데이터에서 EDA, 전처리, 피처 엔지니어링, 모델링, 앙상블, 조합 최적화, 후처리를 거쳐 점수 확인 후 제출하는 흐름도. 검증 설계 단계의 로컬 채점기가 각 단계 결과를 채점하고, 점수가 오르지 않으면 모델링으로 돌아간다.</title>
+          <defs>
+            <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ar-ink" d="M0 0 L10 5 L0 10 z"/></marker>
+            <marker id="ahi" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ar-ix" d="M0 0 L10 5 L0 10 z"/></marker>
+          </defs>
+
+          <!-- phase rail -->
+          <line class="rail" x1="40" y1="150" x2="40" y2="446"/><text class="phase" x="54" y="166">준비</text>
+          <line class="rail" x1="40" y1="506" x2="40" y2="690"/><text class="phase" x="54" y="522">예측</text>
+          <line class="rail" x1="40" y1="730" x2="40" y2="1070"/><text class="phase" x="54" y="746">최적화</text>
+          <line class="rail" x1="40" y1="1120" x2="40" y2="1309"/><text class="phase" x="54" y="1136">제출</text>
+
+          <!-- inputs -->
+          <text class="phase" x="40" y="20">제공 데이터</text>
+          <rect class="box in" x="40" y="34" width="200" height="66"/><text class="in-t" x="56" y="62">발전소 정보</text><text class="sub" x="56" y="86">위치·용량</text>
+          <rect class="box in" x="260" y="34" width="200" height="66"/><text class="in-t" x="276" y="62">SMP · 가중치 k</text><text class="sub" x="276" y="86">시간별 전기값</text>
+          <rect class="box in" x="480" y="34" width="200" height="66"/><text class="in-t" x="496" y="62">발전 실적</text><text class="sub" x="496" y="86">실제 발전량 (정답)</text>
+          <rect class="box in" x="700" y="34" width="200" height="66"/><text class="in-t" x="716" y="62">기상 예보 A·B</text><text class="sub" x="716" y="86">전날 나온 날씨 예보</text>
+          <rect class="box in" x="920" y="34" width="200" height="66"/><text class="in-t" x="936" y="62">기상 실측 A·B</text><text class="sub" x="936" y="86">실제 날씨 (학습용)</text>
+          <path class="ln" d="M140 100 V122 M360 100 V122 M580 100 V122 M800 100 V122 M1020 100 V122 M140 122 H1020"/>
+          <path class="ln" d="M580 122 V148" marker-end="url(#ah)"/>
+
+          <!-- spine -->
+          <a href="#s1"><rect class="box" x="430" y="150" width="300" height="72"/><text class="num" x="448" y="192">01</text><text class="ttl" x="486" y="181">EDA</text><text class="sub" x="486" y="206">데이터 생김새 훑어보기</text></a>
+          <path class="ln" d="M580 222 V260" marker-end="url(#ah)"/>
+          <a href="#s2"><rect class="box" x="430" y="262" width="300" height="72"/><text class="num" x="448" y="304">02</text><text class="ttl" x="486" y="293">전처리</text><text class="sub" x="486" y="318">빈칸 채우고 이상한 값 정리</text></a>
+          <path class="ln" d="M580 334 V372" marker-end="url(#ah)"/>
+          <a href="#s3"><rect class="box" x="430" y="374" width="300" height="72"/><text class="num" x="448" y="416">03</text><text class="ttl" x="486" y="405">피처 엔지니어링</text><text class="sub" x="486" y="430">모델에 줄 힌트 만들기</text></a>
+          <path class="ln" d="M580 446 V504" marker-end="url(#ah)"/>
+          <a href="#s5"><rect class="box" x="430" y="506" width="300" height="72"/><text class="num" x="448" y="548">05</text><text class="ttl" x="486" y="537">모델링</text><text class="sub" x="486" y="562">발전소별 발전량 맞히기</text></a>
+          <path class="ln" d="M580 578 V616" marker-end="url(#ah)"/>
+          <a href="#s6"><rect class="box" x="430" y="618" width="300" height="72"/><text class="num" x="448" y="660">06</text><text class="ttl" x="486" y="649">앙상블</text><text class="sub" x="486" y="674">여러 모델의 답을 섞기</text></a>
+          <path class="ln" d="M580 690 V728" marker-end="url(#ah)"/>
+          <text class="lbl ink" x="594" y="714">어디서 틀리는지 → 묶음 짜기에 사용</text>
+          <a href="#s7" class="k"><rect class="box key" x="430" y="730" width="300" height="72"/><text class="num" x="448" y="772">07</text><text class="ttl" x="486" y="761">조합 최적화</text><text class="sub" x="486" y="786">253곳을 A·B 두 묶음으로</text></a>
+          <path class="ln" d="M580 802 V840" marker-end="url(#ah)"/>
+          <a href="#s8"><rect class="box" x="430" y="842" width="300" height="72"/><text class="num" x="448" y="884">08</text><text class="ttl" x="486" y="873">후처리</text><text class="sub" x="486" y="898">말 안 되는 값 바로잡기</text></a>
+          <path class="ln" d="M580 914 V948" marker-end="url(#ah)"/>
+
+          <!-- decision -->
+          <polygon class="dia" points="580,950 710,1010 580,1070 450,1010"/>
+          <text class="dia-t" x="580" y="1005" text-anchor="middle">점수가</text>
+          <text class="dia-t" x="580" y="1028" text-anchor="middle">올랐나?</text>
+          <path class="ln ix" d="M450 1010 H370 V542 H428" marker-end="url(#ahi)"/>
+          <text class="lbl" x="358" y="776" text-anchor="middle" transform="rotate(-90 358 776)">아니오 → 05로 돌아가 다시 개선</text>
+          <path class="ln" d="M580 1070 V1118" marker-end="url(#ah)"/>
+          <text class="lbl ink" x="594" y="1100">예</text>
+
+          <a href="#s9"><rect class="box" x="430" y="1120" width="300" height="72"/><text class="num" x="448" y="1162">09</text><text class="ttl" x="486" y="1151">제출</text><text class="sub" x="486" y="1176">하루 3번, 총 20번까지</text></a>
+          <path class="ln" d="M580 1192 V1220 M440 1220 H720"/>
+          <path class="ln" d="M440 1220 V1243" marker-end="url(#ah)"/>
+          <path class="ln" d="M720 1220 V1243" marker-end="url(#ah)"/>
+          <rect class="box out" x="320" y="1245" width="240" height="66"/><text class="big" x="336" y="1273">composition.csv</text><text class="sub" x="336" y="1297">어느 발전소가 어느 묶음인지</text>
+          <rect class="box out" x="600" y="1245" width="240" height="66"/><text class="big" x="616" y="1273">예측 CSV</text><text class="sub" x="616" y="1297">묶음별 시간별 발전량</text>
+
+          <!-- scorer -->
+          <path class="ln" d="M730 298 H1000 V504" marker-end="url(#ah)"/>
+          <text class="lbl ink" x="746" y="288">시험용 기간 떼어두기</text>
+          <a href="#s4" class="k">
+            <rect class="box key" x="860" y="506" width="280" height="408"/>
+            <text class="num" x="880" y="538">04</text>
+            <text class="ttl" x="880" y="572">검증 설계</text>
+            <text class="sub" x="880" y="600">로컬 채점기</text>
+            <text class="big" x="880" y="660">우리끼리 점수를</text>
+            <text class="big" x="880" y="684">매기는 도구</text>
+            <text class="sub" x="880" y="740">점수 S = 판매 수익 − 벌점 W</text>
+            <text class="sub" x="880" y="766">벌점 = 전기값 × 틀린 양</text>
+            <text class="sub" x="880" y="820">지난 기간 일부를</text>
+            <text class="sub" x="880" y="844">시험지처럼 사용</text>
+            <text class="sub" x="880" y="892">※ W 정확한 식은 확인 필요</text>
+          </a>
+          <path class="ln dash" d="M730 542 H858" marker-end="url(#ahi)"/>
+          <path class="ln dash" d="M730 654 H858" marker-end="url(#ahi)"/>
+          <path class="ln dash" d="M730 766 H858" marker-end="url(#ahi)"/>
+          <path class="ln dash" d="M730 878 H858" marker-end="url(#ahi)"/>
+          <text class="lbl" x="742" y="532">결과 채점</text>
+          <path class="ln ix" d="M1000 914 V1010 H712" marker-end="url(#ahi)"/>
+          <text class="lbl" x="800" y="1000">점수 S</text>
+        </svg>
+      </div>
+      <div class="legend mono">
+        <span><i></i>이 대회에서 특히 중요한 단계</span>
+        <span><i class="o"></i>보통 예측 대회와 같은 단계</span>
+        <span><i class="d"></i>로컬 채점기로 점수 확인</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="steps">
+  <div class="wrap">
+    <div class="split">
+      <h2>Steps</h2>
+      <span class="mono">단계별로 하는 일</span>
+    </div>
+
+    <details id="s1">
+      <summary><span class="n">01</span><span class="t">EDA<small>데이터 생김새 훑어보기</small></span><span class="g">+</span></summary>
+      <div class="body"><span class="sp"></span>
+        <div><p class="why">본격적으로 만들기 전에 데이터가 어떻게 생겼는지 눈으로 확인하는 단계입니다.</p><ul>
+          <li>파일마다 기간이 언제부터 언제까지인지, 빈칸은 얼마나 있는지</li>
+          <li>발전소마다 얼마나 크고, 평소에 얼마나 발전하는지</li>
+          <li>예보 A와 B 중 어느 쪽이 실제 날씨와 더 잘 맞는지</li>
+          <li>전기값(SMP)이 비싼 시간대가 언제인지</li>
+        </ul></div>
+        <div><h4>결과물</h4><div class="out">eda.ipynb<br>데이터 요약표</div></div>
+      </div>
+    </details>
+
+    <details id="s2">
+      <summary><span class="n">02</span><span class="t">전처리<small>빈칸 채우고 이상한 값 정리</small></span><span class="g">+</span></summary>
+      <div class="body"><span class="sp"></span>
+        <div><p class="why">모델이 헷갈리지 않게 데이터를 깨끗하게 만드는 단계입니다.</p><ul>
+          <li>예보에 빠진 칸 채우기 (빠진 시간도 채점하니까 지우면 안 됨)</li>
+          <li>발전소 크기보다 큰 값, 며칠씩 0만 나오는 고장 구간 정리</li>
+          <li>시간 맞추기: 01:00 값은 00시~01시 동안의 값</li>
+          <li>전날 17시 이후에 생긴 정보는 절대 쓰지 않기</li>
+        </ul></div>
+        <div><h4>결과물</h4><div class="out">preprocess.py<br>정리된 데이터 파일</div></div>
+      </div>
+    </details>
+
+    <details id="s3">
+      <summary><span class="n">03</span><span class="t">피처 엔지니어링<small>모델에 줄 힌트 만들기</small></span><span class="g">+</span></summary>
+      <div class="body"><span class="sp"></span>
+        <div><p class="why">원래 데이터에 없는 유용한 정보를 계산해서 붙여주는 단계입니다.</p><ul>
+          <li>그 시간에 해가 얼마나 높이 떠 있는지</li>
+          <li>구름 한 점 없을 때 받을 수 있는 최대 햇빛 양</li>
+          <li>발전량을 발전소 크기로 나눠서 큰 곳과 작은 곳을 같은 기준으로 비교</li>
+          <li>예보 A·B, 오전 10시·오후 5시 예보를 모두 활용</li>
+        </ul></div>
+        <div><h4>결과물</h4><div class="out">features.py</div></div>
+      </div>
+    </details>
+
+    <details id="s4">
+      <summary><span class="n">04</span><span class="t">검증 설계<span class="tag">핵심</span><small>우리끼리 점수 매기는 도구 만들기</small></span><span class="g">+</span></summary>
+      <div class="body"><span class="sp"></span>
+        <div><p class="why">제출은 20번밖에 못 합니다. 그래서 대회 채점 방식을 똑같이 따라 하는 로컬 채점기를 만들어, 제출하지 않고도 점수를 확인합니다.</p><ul>
+          <li>대회 점수 계산식을 그대로 코드로 옮기기</li>
+          <li>지난 기간 중 마지막 몇 주를 떼어 두고 시험지처럼 사용</li>
+          <li>처음 1~2번 제출해서 우리 점수와 리더보드 점수가 같이 움직이는지 확인</li>
+        </ul></div>
+        <div><h4>결과물</h4><div class="out">scorer.py<br>입력: 묶음 배정, 예측, 실제값<br>출력: 점수 S</div></div>
+      </div>
+    </details>
+
+    <details id="s5">
+      <summary><span class="n">05</span><span class="t">모델링<small>발전소별 발전량 맞히기</small></span><span class="g">+</span></summary>
+      <div class="body"><span class="sp"></span>
+        <div><p class="why">날씨 예보를 보고 내일 시간별 발전량을 예측하는 모델을 만듭니다.</p><ul>
+          <li>먼저 간단한 기준 모델: 발전소 크기 × 예보 햇빛 양</li>
+          <li>그다음 LightGBM 같은 머신러닝 모델</li>
+          <li>전기값이 비싼 시간대를 더 정확히 맞히도록 학습</li>
+          <li>발전소별로 예측해서 더하기 vs 묶음 전체를 바로 예측하기 비교</li>
+        </ul></div>
+        <div><h4>결과물</h4><div class="out">train.py<br>예측 결과 (07단계에서 사용)</div></div>
+      </div>
+    </details>
+
+    <details id="s6">
+      <summary><span class="n">06</span><span class="t">앙상블<small>여러 모델의 답을 섞기</small></span><span class="g">+</span></summary>
+      <div class="body"><span class="sp"></span>
+        <div><p class="why">모델 하나보다 여러 모델의 답을 적당히 섞는 쪽이 보통 더 잘 맞습니다.</p><ul>
+          <li>예보 A로 만든 모델, 예보 B로 만든 모델을 섞기</li>
+          <li>종류가 다른 모델끼리 섞기</li>
+          <li>섞는 비율은 로컬 채점기 점수가 제일 좋은 쪽으로</li>
+        </ul></div>
+        <div><h4>결과물</h4><div class="out">ensemble.py</div></div>
+      </div>
+    </details>
+
+    <details id="s7">
+      <summary><span class="n">07</span><span class="t">조합 최적화<span class="tag">핵심</span><small>253곳을 A·B 두 묶음으로 나누기</small></span><span class="g">+</span></summary>
+      <div class="body"><span class="sp"></span>
+        <div><p class="why">벌점은 묶음 전체의 틀린 양으로 매깁니다. 한 곳이 많이 틀리고 다른 곳이 반대로 틀리면 같은 묶음 안에서 서로 지워집니다.</p><ul>
+          <li>지난 기간 예측이 발전소마다 언제, 어느 방향으로 틀렸는지 확인</li>
+          <li>같이 틀리는 발전소(가까운 곳, 같은 날씨)는 서로 다른 묶음에 나눠 담기</li>
+          <li>나누는 방법이 너무 많아서 다 해볼 수 없으니, 조금씩 바꿔 보며 점수가 오르는 쪽을 찾기</li>
+          <li>다른 기간으로도 점수가 좋은지 다시 확인</li>
+        </ul></div>
+        <div><h4>결과물</h4><div class="out">partition.py<br>composition.csv</div></div>
+      </div>
+    </details>
+
+    <details id="s8">
+      <summary><span class="n">08</span><span class="t">후처리<small>말 안 되는 값 바로잡기</small></span><span class="g">+</span></summary>
+      <div class="body"><span class="sp"></span>
+        <div><p class="why">모델이 낸 답 중 현실적으로 불가능한 값을 고칩니다.</p><ul>
+          <li>밤에는 발전량 0</li>
+          <li>발전소 크기보다 큰 값은 최대치로 자르기</li>
+          <li>묶음 전체가 계속 많게(또는 적게) 예측되면 그만큼 보정</li>
+        </ul></div>
+        <div><h4>결과물</h4><div class="out">postprocess.py</div></div>
+      </div>
+    </details>
+
+    <details id="s9">
+      <summary><span class="n">09</span><span class="t">제출<small>파일 내고 리더보드 확인</small></span><span class="g">+</span></summary>
+      <div class="body"><span class="sp"></span>
+        <div><p class="why">묶음 배정 파일과 예측 파일을 제출합니다. 기회가 적으니 아껴 씁니다.</p><ul>
+          <li>composition.csv와 묶음별 예측 CSV 제출</li>
+          <li>하루 3번, 대회 기간 전체 20번까지</li>
+          <li>무엇을 낼지는 리더보드보다 우리 로컬 점수를 보고 결정</li>
+        </ul></div>
+        <div><h4>결과물</h4><div class="out">제출 파일<br>제출 기록표 (언제, 무엇을, 몇 점)</div></div>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section class="band indigo" id="core">
+  <div class="wrap">
+    <h2>대부분은 평범한 예측 대회와 같고, 04와 07에서 순위가 갈립니다</h2>
+    <div class="pair">
+      <div>
+        <span class="mono">04 / 검증 설계</span>
+        <h3>제출 전에 점수를 미리 알아야 합니다</h3>
+        <p>제출 기회는 20번뿐이라 제출로 하나하나 확인할 수 없습니다. 로컬 채점기가 있으면 몇백 번이든 시험해 볼 수 있습니다.</p>
+        <div class="formula">점수 S = 전기 판매 수익 − 예측이 틀린 만큼의 벌점 W</div>
+      </div>
+      <div>
+        <span class="mono">07 / 조합 최적화</span>
+        <h3>틀린 게 서로 지워지게 묶습니다</h3>
+        <p>A 발전소는 예측보다 덜 나오고 B 발전소는 더 나오면, 둘을 같은 묶음에 넣었을 때 합계는 거의 맞습니다.</p>
+        <p>253곳을 모두 두 묶음에 나눠 담아야 해서, 잘 맞는 곳만 한쪽에 모을 수는 없습니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="schedule">
+  <div class="wrap">
+    <div class="split">
+      <h2>Schedule</h2>
+      <span class="mono">2026 / KST</span>
+    </div>
+    <div class="sched">
+      <div class="now"><span class="mono">참가 신청 마감</span><b>10.30</b><p>승인되면 데이터는 한 번만 받을 수 있으니 바로 백업</p></div>
+      <div><span class="mono">대회 기간</span><b>11.02–13</b><p>제출은 하루 3번, 총 20번</p></div>
+      <div><span class="mono">코드·발표 제출</span><b>11.23</b><p>상위 7팀만, 처음부터 끝까지 돌아가는 코드</p></div>
+      <div><span class="mono">시상식</span><b>12.04</b><p>부산 BPEX, 대한산업공학회 추계학술대회</p></div>
+    </div>
+    <div class="rules">
+      <div><span class="mono">하면 안 됨</span><p>대회 데이터 말고 다른 데이터 쓰기, 다른 데이터로 미리 학습된 모델 쓰기, 발전소 실제 위치 알아내기</p></div>
+      <div><span class="mono">써도 됨</span><p>Python, R. 오전 10시 예보와 오후 5시 예보 둘 다</p></div>
+      <div><span class="mono">주의</span><p>다른 팀과 결과가 너무 비슷하면 해명해야 하고, 못 하면 실격</p></div>
+    </div>
+  </div>
+</section>
+
+<footer class="band">
+  <div class="wrap"><p class="mono">Source / dataen.ai/challenge · 2026 OIBC 경진대회 공개 페이지 기준</p></div>
+</footer>
+
+<script>
+// 흐름도 상자를 누르면 해당 단계를 펼친다
+document.querySelectorAll('.fc a').forEach(a=>{
+  a.addEventListener('click',()=>{
+    const d=document.querySelector(a.getAttribute('href'));
+    if(d&&d.tagName==='DETAILS')d.open=true;
+  });
+});
+
+// 픽셀아트 태양광 단지: 구름 그림자가 지나가며 출력이 변한다
+(function(){
+  const cv=document.getElementById('field'),ctx=cv.getContext('2d');
+  const sp=document.getElementById('spark'),sx=sp.getContext('2d');
+  const pctEl=document.getElementById('pct');
+  const W=128,H=72;
+  const css=getComputedStyle(document.documentElement);
+  const indigo=css.getPropertyValue('--indigo').trim()||'#1925aa';
+  const hair=css.getPropertyValue('--hair').trim()||'rgba(0,0,0,.14)';
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const img=new Image();
+  img.src='data:image/png;base64,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';
+  img.onload=()=>{
+    ctx.drawImage(img,0,0);
+    const base=ctx.getImageData(0,0,W,H);
+    const panel=new Uint8Array(W*H);let total=0;
+    for(let i=0;i<W*H;i++){
+      const r=base.data[i*4],g=base.data[i*4+1],b=base.data[i*4+2];
+      if(b>r+12&&b>g+4){panel[i]=1;total++;}
+    }
+    const shape=[[0,0,9],[9,-3,7],[-9,2,6],[4,5,7],[-3,-5,6]];
+    const clouds=[
+      {x:-10,y:20,s:1.0,v:.22},
+      {x:60,y:52,s:.8,v:.17},
+      {x:120,y:8,s:.65,v:.28}
+    ];
+    const glints=[];
+    const hist=[];
+    const frame=ctx.createImageData(W,H);
+    function step(){
+      const d=frame.data;d.set(base.data);
+      let shaded=0;
+      for(let y=0;y<H;y++)for(let x=0;x<W;x++){
+        let inside=false,edge=false;
+        for(const c of clouds){
+          for(const [dx,dy,r] of shape){
+            const rr=r*c.s,ex=x-(c.x+dx*c.s),ey=y-(c.y+dy*c.s),dd=Math.sqrt(ex*ex+ey*ey);
+            if(dd<rr){inside=true;break;}
+            if(dd<rr+1.6)edge=true;
+          }
+          if(inside)break;
+        }
+        const i=y*W+x;
+        if(inside||(edge&&(x+y)%2===0)){
+          const k=inside?.5:.72;
+          d[i*4]*=k;d[i*4+1]*=k;d[i*4+2]*=k*1.05;
+          if(panel[i])shaded+=inside?1:.5;
+        }
+      }
+      // 햇빛 반짝임
+      if(glints.length<6&&Math.random()<.35){
+        const i=Math.floor(Math.random()*W*H);
+        if(panel[i])glints.push({i,t:6});
+      }
+      for(let g=glints.length-1;g>=0;g--){
+        const gl=glints[g],o=gl.i*4;
+        if(d[o]>60){const a=gl.t/6;d[o]+= (255-d[o])*a;d[o+1]+=(255-d[o+1])*a;d[o+2]+=(255-d[o+2])*a;}
+        if(--gl.t<=0)glints.splice(g,1);
+      }
+      ctx.putImageData(frame,0,0);
+      for(const c of clouds){c.x+=c.v;if(c.x>W+20*c.s){c.x=-20*c.s;c.y=6+Math.random()*(H-12);}}
+      const out=Math.round(100*(1-.55*shaded/total));
+      pctEl.textContent=out+'%';
+      hist.push(out);if(hist.length>120)hist.shift();
+      drawSpark();
+    }
+    function drawSpark(){
+      const w=sp.width,h=sp.height;sx.clearRect(0,0,w,h);
+      sx.strokeStyle=hair;sx.lineWidth=2;
+      sx.beginPath();sx.moveTo(0,h-2);sx.lineTo(w,h-2);sx.stroke();
+      if(hist.length<2)return;
+      const lo=40,hi=100,px=v=>h-4-(v-lo)/(hi-lo)*(h-10);
+      sx.strokeStyle=indigo;sx.lineWidth=4;sx.lineJoin='round';
+      sx.beginPath();
+      hist.forEach((v,k)=>{const xx=k/(120-1)*w;k?sx.lineTo(xx,px(v)):sx.moveTo(xx,px(v));});
+      sx.stroke();
+      const lx=(hist.length-1)/(120-1)*w;
+      sx.fillStyle=indigo;sx.fillRect(lx-5,px(hist[hist.length-1])-5,10,10);
+    }
+    if(reduce){for(let n=0;n<60;n++)step();return;}
+    for(let n=0;n<40;n++)step();
+    let last=0;
+    (function loop(t){
+      if(!document.hidden&&t-last>80){last=t;step();}
+      requestAnimationFrame(loop);
+    })(0);
+  };
+})();
+</script>
+</body>
+</html>
