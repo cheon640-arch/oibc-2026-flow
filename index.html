@@ -614,8 +614,8 @@ document.querySelectorAll('.fc a').forEach(a=>{
      draw(t){R(0,0,160,90,C.bg);grass();sun(146,11,t);
        const n=Math.min(60,Math.floor(t*22));
        for(let i=0;i<n;i++){const c=i%12,r=Math.floor(i/12);panel(10+c*12,28+r*12);}}},
-    {title:'그래서 두 묶음으로 나눠요',
-     body:'253곳을 묶음 A와 묶음 B 두 개로 나눠 담아요. 한 곳도 빠지면 안 되고, 어느 발전소를 어느 묶음에 넣을지는 우리가 정해요. 이게 첫 번째 숙제예요.',
+    {title:'그래서 두 묶음으로 잘 나눠야 해요',
+     body:'253곳을 묶음 A와 B 두 개로 나눠 담아요. 한 곳도 빠지면 안 돼요. 반대로 틀리는 발전소끼리 같은 묶음에 넣을수록 벌점이 줄어요. 어떻게 나눌지 정하는 게 이 대회의 핵심이에요.',
      period:6.5,labels:[{x:25,y:93,t:'묶음 A',c:'ix'},{x:75,y:93,t:'묶음 B',c:'ix'}],
      draw(t){R(0,0,160,90,C.bg);
        for(const bx of [6,86]){R(bx,26,68,1,C.ind);R(bx,78,68,1,C.ind);R(bx,26,1,53,C.ind);R(bx+67,26,1,53,C.ind);}
@@ -626,7 +626,7 @@ document.querySelectorAll('.fc a').forEach(a=>{
          const p=E((t-0.6-i*0.05)/0.8);
          panel(sx+(tx-sx)*p,sy+(ty-sy)*p-Math.sin(p*Math.PI)*6);}}},
     {title:'하루 전에 내일을 예측해요',
-     body:'전날 오후 5시까지 나온 날씨 예보만 보고, 다음 날 묶음별로 시간마다 전기가 얼마나 나올지 예측해요. 이게 두 번째 숙제예요.',
+     body:'전날 오후 5시까지 나온 날씨 예보만 보고, 다음 날 시간마다 전기가 얼마나 나올지 예측해서 미리 내야 해요.',
      period:6.5,labels:[{x:18,y:82,t:'전날 17:00'},{x:70,y:10,t:'내일 시간별 발전량 예측',c:'ix'}],
      draw(t){R(0,0,160,90,C.bg);
        disc(28,46,13,C.ink);disc(28,46,11,C.paper);
@@ -652,9 +652,9 @@ document.querySelectorAll('.fc a').forEach(a=>{
        sun(140,12,t);
        if(u>.35){const cx=x0+(x1-x0)*.56-5;cloud(cx,8);if(Math.floor(t*6)%2)R(cx+3,14,1,2,C.cloudS);}
        if(u<1)R(cut,20,1,60,C.hair);}},
-    {title:'틀린 게 서로 지워지게 묶어요',
-     body:'A는 예측보다 덜 나오고 B는 더 나오면, 같은 묶음 안에서는 합계가 거의 맞아요. 벌점은 묶음 합계로 매기니까, 반대로 틀리는 발전소끼리 묶으면 벌점이 줄어요.',
-     period:0,labels:[{x:19,y:93,t:'A 발전소 오차'},{x:50,y:93,t:'B 발전소 오차'},{x:81,y:93,t:'A+B 묶음 합계',c:'ix'}],
+    {title:'벌점은 묶음 합계로 매겨요',
+     body:'벌점은 발전소 하나하나가 아니라 여러 곳을 묶은 합계로 매겨요. 막대가 위로 가면 예측보다 더 나온 것, 아래로 가면 덜 나온 것이에요. A가 덜 나오고 B가 더 나오면, 둘을 합친 합계는 거의 맞아서 벌점이 거의 없어요.',
+     period:0,labels:[{x:19,y:93,t:'A 발전소'},{x:50,y:93,t:'B 발전소'},{x:81,y:93,t:'A+B 합계',c:'ix'}],
      draw(t){R(0,0,160,90,C.bg);
        const a=-Math.sin(t*1.7)*26,b=Math.sin(t*1.7)*23+Math.sin(t*3.3)*2,s=a+b;
        const col=(cx,v,c)=>{R(cx-18,50,36,1,C.hair);if(v>=0)R(cx-6,50-v,12,Math.max(1,Math.round(v)),c);else R(cx-6,51,12,Math.max(1,Math.round(-v)),c);};
@@ -673,6 +673,9 @@ document.querySelectorAll('.fc a').forEach(a=>{
        if(t>1.4){for(let i=0;i<3;i++){const s=Math.abs(Math.sin(t*3+i*2));R(70+i*8,30-s*4,2,2,C.sun);}
          R(76,46,9,1,C.ind);R(80,42,1,9,C.ind);}}}
   ];
+
+  // 순서: 발전소 → 예측 → 벌점 → 합계로 상쇄 → 그래서 묶음 나누기 → 제출
+  const [split]=scenes.splice(1,1);scenes.splice(4,0,split);
 
   let cur=0,start=0,raf=0;
   scenes.forEach((s,i)=>{const b=document.createElement('button');b.type='button';b.setAttribute('aria-label',(i+1)+'번째 장');
