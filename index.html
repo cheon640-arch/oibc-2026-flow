@@ -106,17 +106,44 @@ dialog#guide::backdrop{background:rgba(13,19,85,.72)}
 .pg-head{display:flex;align-items:baseline;gap:8px 18px;flex-wrap:wrap;border-top:4px solid var(--pc);padding-top:12px}
 .pg-name{font-family:var(--f-display);font-weight:500;font-size:32px;line-height:1.1;color:var(--pc)}
 .pg-desc{font-size:16px;color:var(--muted)}
-.cards{display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:16px;margin-top:16px}
-.card{background:var(--paper);border-left:6px solid var(--pc);padding:20px 22px;display:flex;flex-direction:column;gap:10px;min-width:0;scroll-margin-top:20px}
+.cards{display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:16px;margin-top:16px;align-items:start}
+.card{background:var(--paper);border-left:6px solid var(--pc);padding:20px 22px;min-width:0;scroll-margin-top:20px}
+.card summary{list-style:none;cursor:pointer;display:flex;flex-direction:column;gap:10px}
+.card summary::-webkit-details-marker{display:none}
+.card summary:focus-visible{outline:2px solid var(--pc);outline-offset:4px}
+.more{align-self:flex-start;font-family:var(--f-mono);font-size:12px;letter-spacing:.02em;color:var(--pc);border:1px solid var(--pc);padding:5px 10px;margin-top:2px}
+.more::after{content:" +"}
+.card[open] .more::after{content:" −"}
+.card[open] .more{background:var(--pc);color:var(--paper)}
+.card summary:hover .more{background:var(--pc);color:var(--paper)}
+.c-body{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.card.key .more{color:var(--paper);border-color:var(--paper)}
+.card.key[open] .more,.card.key summary:hover .more{background:var(--paper);color:var(--pc)}
+
+/* 엑셀 모양 예시 표 */
+.sheet-wrap{background:var(--bone);border:1px solid var(--hair);padding:8px;color:var(--ink);min-height:178px}
+.sheet-bar{display:flex;justify-content:space-between;gap:8px;font-family:var(--f-mono);font-size:11px;color:var(--muted);margin-bottom:6px}
+.sheet-bar b{font-weight:500;color:var(--ink)}
+.sheet{width:100%;border-collapse:collapse;table-layout:fixed;background:var(--paper);font-family:var(--f-mono);font-size:11.5px;font-variant-numeric:tabular-nums}
+.sheet th,.sheet td{border:1px solid #dcd9d1;padding:3px 5px;height:22px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:right;transition:background-color .35s,color .35s}
+.sheet th{background:#efede7;color:#4a4a4a;font-weight:500;text-align:center}
+.sheet .rn{width:22px;padding:0;text-align:center;color:#9a978f;background:#f6f5f1}
+.sheet td.l{text-align:left}
+.sheet .hl{background:color-mix(in srgb,var(--pc) 16%,white)}
+.sheet th.hl{background:color-mix(in srgb,var(--pc) 30%,white);color:var(--ink)}
+.sheet .new{background:color-mix(in srgb,var(--pc) 24%,white);color:var(--pc);font-weight:600}
+.sheet .bad{background:#fde1d3;color:#b23d12;font-weight:600}
+.sheet .blank{background:repeating-linear-gradient(45deg,#fff 0 3px,#f0eee8 3px 6px)}
+.sheet .chip{display:inline-block;min-width:18px;text-align:center;padding:0 4px;color:#fff;font-weight:600}
+.sheet tfoot td{border-top:2px solid var(--pc);font-weight:600;background:#faf9f6}
 .card:target{outline:3px solid var(--pc);outline-offset:2px}
 .c-top{display:flex;justify-content:space-between;align-items:center;gap:12px}
 .c-num{font-family:var(--f-display);font-size:48px;line-height:1;color:var(--pc);font-variant-numeric:tabular-nums}
 .c-tag{font-family:var(--f-mono);font-size:11px;letter-spacing:.04em;color:var(--paper);background:var(--pc);padding:3px 8px}
-.mini{display:block;width:100%;max-width:420px;aspect-ratio:4/1;image-rendering:pixelated;background:var(--bone)}
 .card h3{margin:0;font-family:var(--f-display);font-weight:500;font-size:26px;line-height:1.2}
 .c-one{margin:0;color:var(--muted);font-size:16px}
 .card ul{margin:4px 0 0;padding-left:18px;display:grid;gap:5px;font-size:15px}
-.c-out{margin-top:auto;padding-top:12px;border-top:1px solid var(--hair);font-family:var(--f-mono);font-size:12px;overflow-wrap:anywhere}
+.c-out{padding-top:12px;border-top:1px solid var(--hair);font-family:var(--f-mono);font-size:12px;overflow-wrap:anywhere}
 .c-out .mono{display:block;color:var(--muted);margin-bottom:4px}
 .card.key{background:var(--pc);color:var(--paper);border-left-color:var(--pc)}
 .card.key .c-num{color:var(--paper)}
@@ -366,93 +393,138 @@ footer p{margin:0;color:var(--muted);text-align:center}
     <div class="phase-group" style="--pc:var(--c-prep);--n:3">
       <div class="pg-head"><span class="pg-name">준비</span><span class="pg-desc">데이터를 보고, 정리하고, 힌트를 만들어요</span></div>
       <div class="cards">
-        <article class="card" id="s1">
-          <div class="c-top"><span class="c-num">01</span><span class="c-tag">준비</span></div>
-          <canvas class="mini" data-k="1" width="120" height="30" aria-hidden="true"></canvas>
-          <h3>EDA</h3><p class="c-one">데이터 생김새 훑어보기</p>
-          <ul><li>파일마다 기간과 빈칸 확인</li><li>발전소마다 크기와 평소 발전량</li><li>예보 A·B 중 실제 날씨와 더 잘 맞는 쪽</li><li>전기값(SMP)이 비싼 시간대</li></ul>
-          <div class="c-out"><span class="mono">결과물</span>eda.ipynb · 데이터 요약표</div>
-        </article>
-        <article class="card" id="s2">
-          <div class="c-top"><span class="c-num">02</span><span class="c-tag">준비</span></div>
-          <canvas class="mini" data-k="2" width="120" height="30" aria-hidden="true"></canvas>
-          <h3>전처리</h3><p class="c-one">빈칸 채우고 이상한 값 정리</p>
-          <ul><li>예보 빈칸 채우기 (빠진 시간도 채점하니 지우면 안 됨)</li><li>발전소 크기보다 큰 값, 고장 구간 정리</li><li>시간 맞추기: 01:00 값은 00~01시</li><li>전날 17시 이후 정보는 쓰지 않기</li></ul>
-          <div class="c-out"><span class="mono">결과물</span>preprocess.py · 정리된 데이터</div>
-        </article>
-        <article class="card" id="s3">
-          <div class="c-top"><span class="c-num">03</span><span class="c-tag">준비</span></div>
-          <canvas class="mini" data-k="3" width="120" height="30" aria-hidden="true"></canvas>
-          <h3>피처 엔지니어링</h3><p class="c-one">모델에 줄 힌트 만들기</p>
-          <ul><li>해가 얼마나 높이 떠 있는지 (태양 고도)</li><li>맑은 날 받을 수 있는 최대 햇빛 양</li><li>발전량 ÷ 발전소 크기 (이용률)</li><li>예보 A·B, 10시·17시 예보 모두 활용</li></ul>
-          <div class="c-out"><span class="mono">결과물</span>features.py</div>
-        </article>
+        <details class="card" id="s1">
+          <summary>
+            <div class="c-top"><span class="c-num">01</span><span class="c-tag">준비</span></div>
+            <div class="sheet-wrap" data-k="1" aria-hidden="true"></div>
+            <h3>EDA</h3><p class="c-one">데이터 생김새 훑어보기</p>
+            <span class="more">할 일 보기</span>
+          </summary>
+          <div class="c-body">
+            <ul><li>파일마다 기간과 빈칸 확인</li><li>발전소마다 크기와 평소 발전량</li><li>예보 A·B 중 실제 날씨와 더 잘 맞는 쪽</li><li>전기값(SMP)이 비싼 시간대</li></ul>
+            <div class="c-out"><span class="mono">결과물</span>eda.ipynb · 데이터 요약표</div>
+          </div>
+        </details>
+        <details class="card" id="s2">
+          <summary>
+            <div class="c-top"><span class="c-num">02</span><span class="c-tag">준비</span></div>
+            <div class="sheet-wrap" data-k="2" aria-hidden="true"></div>
+            <h3>전처리</h3><p class="c-one">빈칸 채우고 이상한 값 정리</p>
+            <span class="more">할 일 보기</span>
+          </summary>
+          <div class="c-body">
+            <ul><li>예보 빈칸 채우기 (빠진 시간도 채점하니 지우면 안 됨)</li><li>발전소 크기보다 큰 값, 고장 구간 정리</li><li>시간 맞추기: 01:00 값은 00~01시</li><li>전날 17시 이후 정보는 쓰지 않기</li></ul>
+            <div class="c-out"><span class="mono">결과물</span>preprocess.py · 정리된 데이터</div>
+          </div>
+        </details>
+        <details class="card" id="s3">
+          <summary>
+            <div class="c-top"><span class="c-num">03</span><span class="c-tag">준비</span></div>
+            <div class="sheet-wrap" data-k="3" aria-hidden="true"></div>
+            <h3>피처 엔지니어링</h3><p class="c-one">모델에 줄 힌트 만들기</p>
+            <span class="more">할 일 보기</span>
+          </summary>
+          <div class="c-body">
+            <ul><li>해가 얼마나 높이 떠 있는지 (태양 고도)</li><li>맑은 날 받을 수 있는 최대 햇빛 양</li><li>발전량 ÷ 발전소 크기 (이용률)</li><li>예보 A·B, 10시·17시 예보 모두 활용</li></ul>
+            <div class="c-out"><span class="mono">결과물</span>features.py</div>
+          </div>
+        </details>
       </div>
     </div>
 
     <div class="phase-group" style="--pc:var(--c-score);--n:1">
       <div class="pg-head"><span class="pg-name">채점기</span><span class="pg-desc">제출하지 않고도 점수를 계산하는 도구예요. 모델을 만들기 전에 먼저 만들어 두세요.</span></div>
       <div class="cards">
-        <article class="card key" id="s4">
-          <div class="c-top"><span class="c-num">04</span><span class="c-tag">채점기 · 핵심</span></div>
-          <canvas class="mini" data-k="4" width="120" height="30" aria-hidden="true"></canvas>
-          <h3>검증 설계 (채점기 만들기)</h3><p class="c-one">우리끼리 점수 매기는 도구</p>
-          <ul><li>대회 점수식을 그대로 코드로 옮기기: 점수 S = 판매 수익 − 벌점 W</li><li>지난 기간 마지막 몇 주를 떼어 두고 시험지처럼 사용</li><li>처음 1~2번 제출해서 우리 점수와 리더보드가 같이 움직이는지 확인</li></ul>
-          <div class="c-out"><span class="mono">결과물</span>scorer.py · 입력: 묶음 배정, 예측, 실제값 → 출력: 점수 S</div>
-        </article>
+        <details class="card key" id="s4">
+          <summary>
+            <div class="c-top"><span class="c-num">04</span><span class="c-tag">채점기 · 핵심</span></div>
+            <div class="sheet-wrap" data-k="4" aria-hidden="true"></div>
+            <h3>검증 설계 (채점기 만들기)</h3><p class="c-one">우리끼리 점수 매기는 도구</p>
+            <span class="more">할 일 보기</span>
+          </summary>
+          <div class="c-body">
+            <ul><li>대회 점수식을 그대로 코드로 옮기기: 점수 S = 판매 수익 − 벌점 W</li><li>지난 기간 마지막 몇 주를 떼어 두고 시험지처럼 사용</li><li>처음 1~2번 제출해서 우리 점수와 리더보드가 같이 움직이는지 확인</li></ul>
+            <div class="c-out"><span class="mono">결과물</span>scorer.py · 입력: 묶음 배정, 예측, 실제값 → 출력: 점수 S</div>
+          </div>
+        </details>
       </div>
     </div>
 
     <div class="phase-group" style="--pc:var(--c-pred);--n:2">
       <div class="pg-head"><span class="pg-name">예측</span><span class="pg-desc">날씨 예보로 내일 발전량을 맞혀요</span></div>
       <div class="cards">
-        <article class="card" id="s5">
-          <div class="c-top"><span class="c-num">05</span><span class="c-tag">예측</span></div>
-          <canvas class="mini" data-k="5" width="120" height="30" aria-hidden="true"></canvas>
-          <h3>모델링</h3><p class="c-one">발전소별 발전량 맞히기</p>
-          <ul><li>기준 모델: 발전소 크기 × 예보 햇빛 양</li><li>LightGBM 같은 머신러닝 모델</li><li>전기값이 비싼 시간대를 더 정확히 맞히도록 학습</li><li>발전소별로 더하기 vs 묶음 전체를 바로 예측하기 비교</li></ul>
-          <div class="c-out"><span class="mono">결과물</span>train.py · 예측 결과 (07에서 사용)</div>
-        </article>
-        <article class="card" id="s6">
-          <div class="c-top"><span class="c-num">06</span><span class="c-tag">예측</span></div>
-          <canvas class="mini" data-k="6" width="120" height="30" aria-hidden="true"></canvas>
-          <h3>앙상블</h3><p class="c-one">여러 모델의 답을 섞기</p>
-          <ul><li>예보 A로 만든 모델 + 예보 B로 만든 모델</li><li>종류가 다른 모델끼리 섞기</li><li>섞는 비율은 채점기 점수가 제일 좋은 쪽으로</li></ul>
-          <div class="c-out"><span class="mono">결과물</span>ensemble.py</div>
-        </article>
+        <details class="card" id="s5">
+          <summary>
+            <div class="c-top"><span class="c-num">05</span><span class="c-tag">예측</span></div>
+            <div class="sheet-wrap" data-k="5" aria-hidden="true"></div>
+            <h3>모델링</h3><p class="c-one">발전소별 발전량 맞히기</p>
+            <span class="more">할 일 보기</span>
+          </summary>
+          <div class="c-body">
+            <ul><li>기준 모델: 발전소 크기 × 예보 햇빛 양</li><li>LightGBM 같은 머신러닝 모델</li><li>전기값이 비싼 시간대를 더 정확히 맞히도록 학습</li><li>발전소별로 더하기 vs 묶음 전체를 바로 예측하기 비교</li></ul>
+            <div class="c-out"><span class="mono">결과물</span>train.py · 예측 결과 (07에서 사용)</div>
+          </div>
+        </details>
+        <details class="card" id="s6">
+          <summary>
+            <div class="c-top"><span class="c-num">06</span><span class="c-tag">예측</span></div>
+            <div class="sheet-wrap" data-k="6" aria-hidden="true"></div>
+            <h3>앙상블</h3><p class="c-one">여러 모델의 답을 섞기</p>
+            <span class="more">할 일 보기</span>
+          </summary>
+          <div class="c-body">
+            <ul><li>예보 A로 만든 모델 + 예보 B로 만든 모델</li><li>종류가 다른 모델끼리 섞기</li><li>섞는 비율은 채점기 점수가 제일 좋은 쪽으로</li></ul>
+            <div class="c-out"><span class="mono">결과물</span>ensemble.py</div>
+          </div>
+        </details>
       </div>
     </div>
 
     <div class="phase-group" style="--pc:var(--c-opt);--n:2">
       <div class="pg-head"><span class="pg-name">최적화</span><span class="pg-desc">묶음을 나누고 결과를 다듬어요</span></div>
       <div class="cards">
-        <article class="card key" id="s7">
-          <div class="c-top"><span class="c-num">07</span><span class="c-tag">최적화 · 핵심</span></div>
-          <canvas class="mini" data-k="7" width="120" height="30" aria-hidden="true"></canvas>
-          <h3>조합 최적화</h3><p class="c-one">253곳을 A·B 두 묶음으로 나누기</p>
-          <ul><li>발전소마다 언제, 어느 방향으로 틀리는지 확인</li><li>같이 틀리는 발전소는 서로 다른 묶음에 나눠 담기</li><li>조금씩 바꿔 보며 점수가 오르는 쪽 찾기</li><li>다른 기간으로도 점수가 좋은지 다시 확인</li></ul>
-          <div class="c-out"><span class="mono">결과물</span>partition.py · composition.csv</div>
-        </article>
-        <article class="card" id="s8">
-          <div class="c-top"><span class="c-num">08</span><span class="c-tag">최적화</span></div>
-          <canvas class="mini" data-k="8" width="120" height="30" aria-hidden="true"></canvas>
-          <h3>후처리</h3><p class="c-one">말 안 되는 값 바로잡기</p>
-          <ul><li>밤에는 발전량 0</li><li>발전소 크기보다 큰 값은 최대치로 자르기</li><li>묶음 전체가 계속 많게(적게) 나오면 보정</li></ul>
-          <div class="c-out"><span class="mono">결과물</span>postprocess.py</div>
-        </article>
+        <details class="card key" id="s7">
+          <summary>
+            <div class="c-top"><span class="c-num">07</span><span class="c-tag">최적화 · 핵심</span></div>
+            <div class="sheet-wrap" data-k="7" aria-hidden="true"></div>
+            <h3>조합 최적화</h3><p class="c-one">253곳을 A·B 두 묶음으로 나누기</p>
+            <span class="more">할 일 보기</span>
+          </summary>
+          <div class="c-body">
+            <ul><li>발전소마다 언제, 어느 방향으로 틀리는지 확인</li><li>같이 틀리는 발전소는 서로 다른 묶음에 나눠 담기</li><li>조금씩 바꿔 보며 점수가 오르는 쪽 찾기</li><li>다른 기간으로도 점수가 좋은지 다시 확인</li></ul>
+            <div class="c-out"><span class="mono">결과물</span>partition.py · composition.csv</div>
+          </div>
+        </details>
+        <details class="card" id="s8">
+          <summary>
+            <div class="c-top"><span class="c-num">08</span><span class="c-tag">최적화</span></div>
+            <div class="sheet-wrap" data-k="8" aria-hidden="true"></div>
+            <h3>후처리</h3><p class="c-one">말 안 되는 값 바로잡기</p>
+            <span class="more">할 일 보기</span>
+          </summary>
+          <div class="c-body">
+            <ul><li>밤에는 발전량 0</li><li>발전소 크기보다 큰 값은 최대치로 자르기</li><li>묶음 전체가 계속 많게(적게) 나오면 보정</li></ul>
+            <div class="c-out"><span class="mono">결과물</span>postprocess.py</div>
+          </div>
+        </details>
       </div>
     </div>
 
     <div class="phase-group" style="--pc:var(--c-sub);--n:1">
       <div class="pg-head"><span class="pg-name">제출</span><span class="pg-desc">점수가 오른 버전만 골라서 내요</span></div>
       <div class="cards">
-        <article class="card" id="s9">
-          <div class="c-top"><span class="c-num">09</span><span class="c-tag">제출</span></div>
-          <canvas class="mini" data-k="9" width="120" height="30" aria-hidden="true"></canvas>
-          <h3>제출</h3><p class="c-one">파일 내고 리더보드 확인</p>
-          <ul><li>composition.csv와 묶음별 예측 CSV 제출</li><li>하루 3번, 대회 기간 전체 20번까지</li><li>무엇을 낼지는 리더보드보다 우리 채점기 점수로 결정</li></ul>
-          <div class="c-out"><span class="mono">결과물</span>제출 파일 · 제출 기록표 (언제, 무엇을, 몇 점)</div>
-        </article>
+        <details class="card" id="s9">
+          <summary>
+            <div class="c-top"><span class="c-num">09</span><span class="c-tag">제출</span></div>
+            <div class="sheet-wrap" data-k="9" aria-hidden="true"></div>
+            <h3>제출</h3><p class="c-one">파일 내고 리더보드 확인</p>
+            <span class="more">할 일 보기</span>
+          </summary>
+          <div class="c-body">
+            <ul><li>composition.csv와 묶음별 예측 CSV 제출</li><li>하루 3번, 대회 기간 전체 20번까지</li><li>무엇을 낼지는 리더보드보다 우리 채점기 점수로 결정</li></ul>
+            <div class="c-out"><span class="mono">결과물</span>제출 파일 · 제출 기록표 (언제, 무엇을, 몇 점)</div>
+          </div>
+        </details>
       </div>
     </div>
   </div>
@@ -514,104 +586,90 @@ document.querySelectorAll('.fc a').forEach(a=>{
   });
 });
 
-// 단계 카드마다 작은 픽셀 애니메이션
+// 단계 카드마다 엑셀 모양 예시 표가 한 칸씩 바뀌며 그 단계에서 하는 일을 보여준다
 (function(){
-  const minis=[...document.querySelectorAll('canvas.mini')];if(!minis.length)return;
+  const wraps=[...document.querySelectorAll('.sheet-wrap')];if(!wraps.length)return;
   const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const K={ink:'#0d1355',hair:'#b9b6ad',dark:'#8d8a80',paper:'#ffffff',pen:'#e0662f',sun:'#f3c234',sunD:'#d9971c',cloud:'#ffffff',cloudS:'#c3c6d2'};
-  const E=t=>t<=0?0:t>=1?1:t*t*(3-2*t);
-  const items=minis.map(c=>({c,x:c.getContext('2d'),k:+c.dataset.k,
-    pc:getComputedStyle(c.closest('.phase-group')).getPropertyValue('--pc').trim()||'#1925aa',vis:true}));
-  function draw(it,t){
-    const g=it.x,pc=it.pc;
-    const R=(x,y,w,h,c)=>{g.fillStyle=c;g.fillRect(Math.round(x),Math.round(y),w,h);};
-    const disc=(x,y,r,c)=>{for(let dy=-r;dy<=r;dy++){const w=Math.round(Math.sqrt(r*r-dy*dy));R(x-w,y+dy,2*w+1,1,c);}};
-    R(0,0,120,30,'#e8e6e0');
-    switch(it.k){
-      case 1:{ // EDA: 돋보기가 막대를 훑는다
-        const hs=[8,13,6,17,11,20,9,15,12,18];
-        const cx=12+((Math.sin(t*.9)+1)/2)*96,cy=11;
-        hs.forEach((h,i)=>{const x=8+i*11,near=Math.abs(x+3-cx)<7;R(x,27-h,7,h,near?pc:K.hair);});
-        R(4,27,112,1,K.ink);
-        for(let a=0;a<Math.PI*2;a+=.12){R(cx+Math.cos(a)*6,cy+Math.sin(a)*6,1,1,K.ink);}
-        for(let k=0;k<4;k++)R(cx+4+k,cy+4+k,2,2,K.ink);
-        break;}
-      case 2:{ // 전처리: 빈칸이 하나씩 채워진다
-        const miss=[2,6,11],T=t%4,filled=T<1?0:T<1.6?1:T<2.2?2:3;
-        for(let i=0;i<14;i++){const x=4+i*8,y=12,m=miss.indexOf(i);
-          if(m<0)R(x,y,6,6,K.dark);
-          else if(m<filled)R(x,y,6,6,pc);
-          else if(Math.floor(t*3)%2){R(x,y,6,1,K.dark);R(x,y+5,6,1,K.dark);R(x,y,1,6,K.dark);R(x+5,y,1,6,K.dark);}}
-        break;}
-      case 3:{ // 피처: 해의 높이를 잰다
-        const u=(t*.22)%1,x=8+u*104,y=26-Math.sin(Math.PI*u)*20;
-        R(2,27,116,1,K.ink);
-        for(let yy=Math.round(y)+5;yy<27;yy+=2)R(x,yy,1,1,pc);
-        R(x-3,26,7,1,pc);
-        disc(x,y,3,K.sun);
-        break;}
-      case 4:{ // 채점기: 예측과 실제를 비교하고 점수 막대가 찬다
-        const a=[6,12,17,20,18,13,8,4],p=[7,10,19,16,19,12,10,4];
-        R(2,27,66,1,K.ink);
-        a.forEach((v,i)=>{const x=6+i*8;R(x,27-v,5,v,K.hair);
-          const lo=Math.min(v,p[i]),hi=Math.max(v,p[i]);if(hi>lo)R(x,27-hi,5,hi-lo,K.pen);R(x,27-p[i],5,1,pc);});
-        const q=E((t%3)/2);
-        R(76,11,38,8,K.paper);R(76,11,38,1,K.ink);R(76,18,38,1,K.ink);R(76,11,1,8,K.ink);R(113,11,1,8,K.ink);
-        R(78,13,Math.round(34*q),4,pc);
-        if(q>=1){R(104,24,2,2,K.ink);R(106,26,2,2,K.ink);R(108,22,2,2,K.ink);R(110,20,2,2,K.ink);}
-        break;}
-      case 5:{ // 모델링: 예보를 보고 발전량 곡선을 그린다
-        disc(10,10,3,K.sun);disc(14,14,2,K.cloudS);disc(17,13,3,K.cloud);disc(20,15,2,K.cloud);
-        const ax=26+Math.round(Math.sin(t*4));R(ax,15,7,1,K.ink);R(ax+5,14,1,3,K.ink);R(ax+6,15,1,1,K.ink);
-        R(38,27,78,1,K.ink);
-        const u=E((t%4)/2.5);
-        for(let x=38;x<=38+78*u;x++){const y=27-20*Math.sin(Math.PI*(x-38)/78);R(x,y,1,2,pc);}
-        break;}
-      case 6:{ // 앙상블: 여러 줄이 하나로 모인다
-        for(let x=2;x<118;x++){
-          if(x<82){for(let k=0;k<3;k++){const s=1-x/82;const y=15+(k-1)*9*s+Math.sin(x*.25+t*2.2+k*2)*2.5*s;R(x,y,1,1,[K.dark,K.pen,K.ink][k]);}}
-          else{const y=15+Math.sin(x*.12+t*.8)*1;R(x,y-1,1,3,pc);}}
-        break;}
-      case 7:{ // 조합 최적화: A와 B 사이에서 발전소가 자리를 바꾼다
-        for(const bx of [3,63]){R(bx,3,54,1,K.ink);R(bx,26,54,1,K.ink);R(bx,3,1,24,K.ink);R(bx+53,3,1,24,K.ink);}
-        const pos=(side,i)=>[(side?66:6)+(i%4)*12+4,8+Math.floor(i/4)*10];
-        const cyc=Math.floor(t/1.4),ia=cyc%8,ib=(cyc*3+1)%8,p=E(((t%1.4)-.2)/.8);
-        for(let i=0;i<8;i++){if(i!==ia){const [x,y]=pos(0,i);R(x,y,4,4,pc);}if(i!==ib){const [x,y]=pos(1,i);R(x,y,4,4,pc);}}
-        const [ax,ay]=pos(0,ia),[bx,by]=pos(1,ib),arc=Math.sin(p*Math.PI)*6;
-        R(ax+(bx-ax)*p,ay+(by-ay)*p-arc,4,4,K.pen);
-        R(bx+(ax-bx)*p,by+(ay-by)*p+arc,4,4,K.pen);
-        break;}
-      case 8:{ // 후처리: 밤의 잡음과 튀는 값을 바로잡는다
-        const fixed=(t%4)>=2;
-        for(let x=4;x<116;x+=3)R(x,4,2,1,K.hair);
-        R(2,27,116,1,K.ink);
-        for(let x=4;x<116;x++){
-          let y;const day=x>30&&x<94;
-          if(day){y=27-22*Math.sin(Math.PI*(x-30)/64);if(x>=60&&x<=63&&!fixed)y=1;else if(x>=60&&x<=63)y=Math.max(y,4);}
-          else y=fixed?26:26-((x*7)%5);
-          const bad=!fixed&&(!day&&y<26||day&&x>=60&&x<=63);
-          R(x,y,1,1,bad?K.pen:pc);}
-        break;}
-      case 9:{ // 제출: 파일이 상자로 들어가고 제출 칸이 찬다
-        const cyc=Math.floor(t/2)%4,p=E((t%2)/1.4);
-        for(let i=0;i<3;i++){const x=92+i*9;if(i<cyc)R(x,3,6,6,pc);else{R(x,3,6,1,K.dark);R(x,8,6,1,K.dark);R(x,3,1,6,K.dark);R(x+5,3,1,6,K.dark);}}
-        R(86,20,30,1,K.ink);R(86,20,1,8,K.ink);R(115,20,1,8,K.ink);R(86,27,30,1,K.ink);
-        if(p<1){const x=6+p*90,y=10-Math.sin(p*Math.PI)*6+p*8;
-          R(x,y,9,11,K.ink);R(x+1,y+1,7,9,K.paper);R(x+2,y+3,5,1,pc);R(x+2,y+5,4,1,pc);R(x+2,y+7,5,1,pc);}
-        break;}
-    }
-  }
-  const t0=performance.now();
-  if(reduce){items.forEach(it=>draw(it,1.9));return;}
+  const esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+  // c: 문자열 또는 {v, c(클래스)}
+  const cell=(c,tag)=>{const o=typeof c==='object'&&c!==null?c:{v:c};return '<'+tag+(o.c?' class="'+o.c+'"':'')+'>'+(o.raw?o.v:esc(o.v))+'</'+tag+'>';};
+  const table=(cols,rows,foot)=>{
+    let s='<table class="sheet"><thead><tr><th class="rn"></th>'+cols.map(c=>cell(c,'th')).join('')+'</tr></thead><tbody>';
+    rows.forEach((r,i)=>{s+='<tr><td class="rn">'+(i+1)+'</td>'+r.map(c=>cell(c,'td')).join('')+'</tr>';});
+    s+='</tbody>';
+    if(foot)s+='<tfoot><tr><td class="rn"></td>'+foot.map(c=>cell(c,'td')).join('')+'</tr></tfoot>';
+    return s+'</table>';
+  };
+  const bar=(name,note)=>'<div class="sheet-bar"><b>'+esc(name)+'</b><span>'+esc(note)+'</span></div>';
+  const chip=(g,pc)=>({v:'<span class="chip" style="background:'+(g==='A'?pc:'#0d1355')+'">'+g+'</span>',raw:true,c:'l'});
+
+  const S={
+    1:(f)=>{ // EDA: 열을 하나씩 훑으며 요약값을 본다
+      const cols=['시간','발전량','예보일사','SMP'],k=f%4;
+      const data=[['10:00','412','520','138'],['11:00','','610','141'],['12:00','655','700','150'],['13:00','630','680','152']];
+      const sum=['4시간','평균 566 · 빈칸 1','평균 628','최고 152'];
+      return {name:'eda.xlsx',note:k===1?'빈칸 발견':'열마다 훑어보기',
+        html:table(cols.map((c,i)=>({v:c,c:i===k?'hl':''})),
+          data.map(r=>r.map((v,i)=>({v,c:(i===0?'l ':'')+(v===''?'blank ':'')+(i===k?'hl':'')}))),
+          cols.map((c,i)=>({v:i===k?sum[i]:'',c:(i===0?'l ':'')+(i===k?'hl':'')})))};},
+    2:(f)=>{ // 전처리: 빈칸을 채우고 이상한 값을 고친다
+      const k=f%4;
+      const blank=k<2?{v:'',c:'blank'+(k===1?' hl':'')}:{v:'610',c:'new'};
+      const odd=k<3?{v:'9999',c:'bad'}:{v:'655',c:'new'};
+      return {name:'preprocess',note:['원본','빈칸 찾기','빈칸 채움','이상한 값 고침'][k],
+        html:table(['시간','예보일사','발전량'],[
+          [{v:'10:00',c:'l'},'520','412'],[{v:'11:00',c:'l'},blank,'508'],[{v:'12:00',c:'l'},'700',odd],[{v:'13:00',c:'l'},'680','630']])};},
+    3:(f)=>{ // 피처: 새 열(힌트)이 하나씩 생긴다
+      const k=f%4,extra=[['해높이','32°','45°','58°','61°'],['맑은날일사','610','720','800','790'],['이용률','0.41','0.55','0.66','0.63']].slice(0,k);
+      const base=[['10:00','520'],['11:00','610'],['12:00','700'],['13:00','680']];
+      return {name:'features',note:k?'새 열 '+k+'개 추가':'원래 열 2개',
+        html:table(['시간','예보일사'].concat(extra.map((e,i)=>({v:e[0],c:i===k-1?'hl':''}))),
+          base.map((r,ri)=>[{v:r[0],c:'l'},r[1]].concat(extra.map((e,i)=>({v:e[ri+1],c:i===k-1?'new':''})))))};},
+    4:(f)=>{ // 채점기: 차이와 벌점을 계산하고 점수를 낸다
+      const k=f%6,rows=[['10:00','412','405','7','10'],['11:00','610','520','90','127'],['12:00','700','655','45','68'],['13:00','680','630','50','76']];
+      return {name:'scorer',note:k<5?'한 줄씩 채점':'점수 계산 끝',
+        html:table(['시간','예측','실제','차이','벌점'],rows.map((r,i)=>[{v:r[0],c:'l'},r[1],r[2],
+            i<k?{v:r[3],c:i===k-1?'new':''}:{v:'',c:''},i<k?{v:r[4],c:i===k-1?'bad':''}:{v:'',c:''}]),
+          [{v:'벌점 합',c:'l'},'','','',k>=5?{v:'281',c:'bad'}:''])};},
+    5:(f)=>{ // 모델링: 예보를 보고 예측 열을 채운다
+      const k=f%5,rows=[['520','14°','32°','401'],['610','16°','45°','498'],['700','18°','58°','571'],['680','18°','61°','552']];
+      return {name:'model',note:k<4?(k+1)+'번째 줄 예측 중':'예측 완료',
+        html:table(['예보일사','기온','해높이',{v:'예측 발전량',c:'hl'}],rows.map((r,i)=>[
+          {v:r[0],c:i===k?'hl':''},{v:r[1],c:i===k?'hl':''},{v:r[2],c:i===k?'hl':''},i<k?{v:r[3],c:i===k-1?'new':''}:{v:'',c:'blank'}]))};},
+    6:(f)=>{ // 앙상블: 여러 모델의 답을 평균 낸다
+      const k=f%5,rows=[['401','420','395','405'],['498','512','480','497'],['571','560','590','574'],['552','540','566','553']];
+      return {name:'ensemble',note:'세 모델의 평균',
+        html:table(['모델1','모델2','모델3',{v:'최종',c:'hl'}],rows.map((r,i)=>[
+          {v:r[0],c:i===k?'hl':''},{v:r[1],c:i===k?'hl':''},{v:r[2],c:i===k?'hl':''},i<k?{v:r[3],c:i===k-1?'new':''}:{v:'',c:'blank'}]))};},
+    7:(f,pc)=>{ // 조합 최적화: 묶음 열의 A/B를 바꿔 본다
+      const names=[['P001','경남'],['P002','경남'],['P003','전남'],['P004','전남'],['P005','충북']];
+      const g=['A','A','B','B','A'],flips=[1,3,4,1,3,4],k=f%6;
+      for(let i=0;i<=k;i++)g[flips[i]]=g[flips[i]]==='A'?'B':'A';
+      const changed=flips[k],a=g.filter(x=>x==='A').length;
+      return {name:'composition.csv',note:'P00'+(changed+1)+' 묶음 바꿔 보기',
+        html:table(['발전소','지역','묶음'],names.map((r,i)=>[{v:r[0],c:'l'+(i===changed?' hl':'')},{v:r[1],c:'l'+(i===changed?' hl':'')},
+          Object.assign(chip(g[i],pc),{c:'l'+(i===changed?' new':'')})]),
+          [{v:'합계',c:'l'},{v:'',c:''},{v:'A '+a+' · B '+(5-a),c:'l'}])};},
+    8:(f)=>{ // 후처리: 말이 안 되는 값을 고친다
+      const k=f%5,rows=[['03:00','-12','0','밤'],['13:00','812','700','용량 초과'],['15:00','540','540','그대로'],['20:00','8','0','밤']];
+      return {name:'postprocess',note:k?'바로잡는 중':'모델이 낸 원래 값',
+        html:table(['시간','예측','고친 값','이유'],rows.map((r,i)=>{const done=i<k,bad=r[1]!==r[2];
+          return [{v:r[0],c:'l'},{v:r[1],c:bad&&!done?'bad':''},done?{v:r[2],c:bad?'new':''}:{v:'',c:'blank'},{v:done?r[3]:'',c:'l'}];}))};},
+    9:(f)=>{ // 제출: 제출 기록표가 한 줄씩 늘어난다
+      const k=f%4,rows=[['11/02','v1','−312만','−330만'],['11/03','v2','−274만','−281만'],['11/03','v3','−251만','−262만']];
+      return {name:'제출 기록표',note:'남은 제출 '+(20-k)+'회',
+        html:table(['날짜','버전','우리 점수','리더보드'],rows.map((r,i)=>i<k?[{v:r[0],c:'l'+(i===k-1?' new':'')},{v:r[1],c:'l'+(i===k-1?' new':'')},{v:r[2],c:i===k-1?'new':''},{v:r[3],c:i===k-1?'new':''}]:[{v:'',c:''},{v:'',c:''},{v:'',c:''},{v:'',c:''}]))};}
+  };
+
+  const items=wraps.map(w=>({w,k:+w.dataset.k,pc:getComputedStyle(w.closest('.phase-group')).getPropertyValue('--pc').trim()||'#1925aa',vis:true}));
+  const render=(it,f)=>{const r=S[it.k](f,it.pc);it.w.innerHTML=bar(r.name,'예시 · '+r.note)+r.html;};
+  if(reduce){items.forEach(it=>render(it,it.k===4?5:3));return;}
   if('IntersectionObserver' in window){
-    const io=new IntersectionObserver(es=>es.forEach(e=>{const it=items.find(i=>i.c===e.target);if(it)it.vis=e.isIntersecting;}));
-    items.forEach(it=>io.observe(it.c));
+    const io=new IntersectionObserver(es=>es.forEach(e=>{const it=items.find(i=>i.w===e.target);if(it)it.vis=e.isIntersecting;}));
+    items.forEach(it=>io.observe(it.w));
   }
-  let last=0;
-  (function loop(now){
-    if(!document.hidden&&now-last>70){last=now;const t=(now-t0)/1000;items.forEach(it=>{if(it.vis)draw(it,t);});}
-    requestAnimationFrame(loop);
-  })(t0);
+  let f=0;items.forEach(it=>render(it,0));
+  setInterval(()=>{if(document.hidden)return;f++;items.forEach(it=>{if(it.vis)render(it,f);});},1300);
 })();
 
 // 마우스로 흐름도를 끌어서 옆으로 넘긴다 (끌었을 때는 상자 클릭 무시)
