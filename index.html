@@ -89,8 +89,8 @@ dialog#guide::backdrop{background:rgba(13,19,85,.72)}
 .plate-head{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;color:var(--muted)}
 .fc-scroll{overflow-x:auto;padding-block:20px 8px}
 .fc{display:block;width:100%;min-width:820px;height:auto}
-.fc-scroll-h,.swipe{display:none}
-.fc-scroll-h{-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+.fc-scroll-h{-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;cursor:grab}
+.fc-scroll-h.dragging{cursor:grabbing;user-select:none}
 .fc.fc-h{width:2450px;min-width:0;max-width:none}
 .swipe{margin:14px 0 0;color:var(--indigo);text-align:center}
 .fc .box{fill:var(--bone);stroke:var(--ink);stroke-width:1}
@@ -176,9 +176,6 @@ footer p{margin:0;color:var(--muted);text-align:center}
   .hero,.pair,.rules{grid-template-columns:1fr}
   .hero{gap:20px}
   .pixel-bar{grid-template-columns:1fr}
-  .fc-scroll:not(.fc-scroll-h){display:none}
-  .fc-scroll-h{display:block}
-  .swipe{display:block}
   .guide-open{justify-self:stretch}
   .guide-open .go-text{flex:1}
   .g-text p{font-size:16px}
@@ -234,89 +231,7 @@ footer p{margin:0;color:var(--muted);text-align:center}
 
     <div class="plate">
       <div class="plate-head mono"><span>Fig. 1 / 전체 작업 순서</span><span>발전소 253곳 → 묶음 2개</span></div>
-      <div class="fc-scroll">
-        <svg class="fc" viewBox="0 0 1180 1330" role="img" aria-labelledby="fc-title">
-          <title id="fc-title">제공 데이터에서 EDA, 전처리, 피처 엔지니어링, 모델링, 앙상블, 조합 최적화, 후처리를 거쳐 점수 확인 후 제출하는 흐름도. 검증 설계 단계의 로컬 채점기가 각 단계 결과를 채점하고, 점수가 오르지 않으면 모델링으로 돌아간다.</title>
-          <defs>
-            <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ar-ink" d="M0 0 L10 5 L0 10 z"/></marker>
-            <marker id="ahi" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ar-ix" d="M0 0 L10 5 L0 10 z"/></marker>
-          </defs>
-
-          <!-- phase rail -->
-          <line class="rail" x1="40" y1="150" x2="40" y2="446"/><text class="phase" x="54" y="166">준비</text>
-          <line class="rail" x1="40" y1="506" x2="40" y2="690"/><text class="phase" x="54" y="522">예측</text>
-          <line class="rail" x1="40" y1="730" x2="40" y2="1070"/><text class="phase" x="54" y="746">최적화</text>
-          <line class="rail" x1="40" y1="1120" x2="40" y2="1309"/><text class="phase" x="54" y="1136">제출</text>
-
-          <!-- inputs -->
-          <text class="phase" x="40" y="20">제공 데이터</text>
-          <rect class="box in" x="40" y="34" width="200" height="66"/><text class="in-t" x="56" y="62">발전소 정보</text><text class="sub" x="56" y="86">위치·용량</text>
-          <rect class="box in" x="260" y="34" width="200" height="66"/><text class="in-t" x="276" y="62">SMP · 가중치 k</text><text class="sub" x="276" y="86">시간별 전기값</text>
-          <rect class="box in" x="480" y="34" width="200" height="66"/><text class="in-t" x="496" y="62">발전 실적</text><text class="sub" x="496" y="86">실제 발전량 (정답)</text>
-          <rect class="box in" x="700" y="34" width="200" height="66"/><text class="in-t" x="716" y="62">기상 예보 A·B</text><text class="sub" x="716" y="86">전날 나온 날씨 예보</text>
-          <rect class="box in" x="920" y="34" width="200" height="66"/><text class="in-t" x="936" y="62">기상 실측 A·B</text><text class="sub" x="936" y="86">실제 날씨 (학습용)</text>
-          <path class="ln" d="M140 100 V122 M360 100 V122 M580 100 V122 M800 100 V122 M1020 100 V122 M140 122 H1020"/>
-          <path class="ln" d="M580 122 V148" marker-end="url(#ah)"/>
-
-          <!-- spine -->
-          <a href="#s1"><rect class="box" x="430" y="150" width="300" height="72"/><text class="num" x="448" y="192">01</text><text class="ttl" x="486" y="181">EDA</text><text class="sub" x="486" y="206">데이터 생김새 훑어보기</text></a>
-          <path class="ln" d="M580 222 V260" marker-end="url(#ah)"/>
-          <a href="#s2"><rect class="box" x="430" y="262" width="300" height="72"/><text class="num" x="448" y="304">02</text><text class="ttl" x="486" y="293">전처리</text><text class="sub" x="486" y="318">빈칸 채우고 이상한 값 정리</text></a>
-          <path class="ln" d="M580 334 V372" marker-end="url(#ah)"/>
-          <a href="#s3"><rect class="box" x="430" y="374" width="300" height="72"/><text class="num" x="448" y="416">03</text><text class="ttl" x="486" y="405">피처 엔지니어링</text><text class="sub" x="486" y="430">모델에 줄 힌트 만들기</text></a>
-          <path class="ln" d="M580 446 V504" marker-end="url(#ah)"/>
-          <a href="#s5"><rect class="box" x="430" y="506" width="300" height="72"/><text class="num" x="448" y="548">05</text><text class="ttl" x="486" y="537">모델링</text><text class="sub" x="486" y="562">발전소별 발전량 맞히기</text></a>
-          <path class="ln" d="M580 578 V616" marker-end="url(#ah)"/>
-          <a href="#s6"><rect class="box" x="430" y="618" width="300" height="72"/><text class="num" x="448" y="660">06</text><text class="ttl" x="486" y="649">앙상블</text><text class="sub" x="486" y="674">여러 모델의 답을 섞기</text></a>
-          <path class="ln" d="M580 690 V728" marker-end="url(#ah)"/>
-          <text class="lbl ink" x="594" y="714">어디서 틀리는지 → 묶음 짜기에 사용</text>
-          <a href="#s7" class="k"><rect class="box key" x="430" y="730" width="300" height="72"/><text class="num" x="448" y="772">07</text><text class="ttl" x="486" y="761">조합 최적화</text><text class="sub" x="486" y="786">253곳을 A·B 두 묶음으로</text></a>
-          <path class="ln" d="M580 802 V840" marker-end="url(#ah)"/>
-          <a href="#s8"><rect class="box" x="430" y="842" width="300" height="72"/><text class="num" x="448" y="884">08</text><text class="ttl" x="486" y="873">후처리</text><text class="sub" x="486" y="898">말 안 되는 값 바로잡기</text></a>
-          <path class="ln" d="M580 914 V948" marker-end="url(#ah)"/>
-
-          <!-- decision -->
-          <polygon class="dia" points="580,950 710,1010 580,1070 450,1010"/>
-          <text class="dia-t" x="580" y="1005" text-anchor="middle">점수가</text>
-          <text class="dia-t" x="580" y="1028" text-anchor="middle">올랐나?</text>
-          <path class="ln ix" d="M450 1010 H370 V542 H428" marker-end="url(#ahi)"/>
-          <text class="lbl" x="358" y="776" text-anchor="middle" transform="rotate(-90 358 776)">아니오 → 05로 돌아가 다시 개선</text>
-          <path class="ln" d="M580 1070 V1118" marker-end="url(#ah)"/>
-          <text class="lbl ink" x="594" y="1100">예</text>
-
-          <a href="#s9"><rect class="box" x="430" y="1120" width="300" height="72"/><text class="num" x="448" y="1162">09</text><text class="ttl" x="486" y="1151">제출</text><text class="sub" x="486" y="1176">하루 3번, 총 20번까지</text></a>
-          <path class="ln" d="M580 1192 V1220 M440 1220 H720"/>
-          <path class="ln" d="M440 1220 V1243" marker-end="url(#ah)"/>
-          <path class="ln" d="M720 1220 V1243" marker-end="url(#ah)"/>
-          <rect class="box out" x="320" y="1245" width="240" height="66"/><text class="big" x="336" y="1273">composition.csv</text><text class="sub" x="336" y="1297">어느 발전소가 어느 묶음인지</text>
-          <rect class="box out" x="600" y="1245" width="240" height="66"/><text class="big" x="616" y="1273">예측 CSV</text><text class="sub" x="616" y="1297">묶음별 시간별 발전량</text>
-
-          <!-- scorer -->
-          <path class="ln" d="M730 298 H1000 V504" marker-end="url(#ah)"/>
-          <text class="lbl ink" x="746" y="288">시험용 기간 떼어두기</text>
-          <a href="#s4" class="k">
-            <rect class="box key" x="860" y="506" width="280" height="408"/>
-            <text class="num" x="880" y="538">04</text>
-            <text class="ttl" x="880" y="572">검증 설계</text>
-            <text class="sub" x="880" y="600">로컬 채점기</text>
-            <text class="big" x="880" y="660">우리끼리 점수를</text>
-            <text class="big" x="880" y="684">매기는 도구</text>
-            <text class="sub" x="880" y="740">점수 S = 판매 수익 − 벌점 W</text>
-            <text class="sub" x="880" y="766">벌점 = 전기값 × 틀린 양</text>
-            <text class="sub" x="880" y="820">지난 기간 일부를</text>
-            <text class="sub" x="880" y="844">시험지처럼 사용</text>
-            <text class="sub" x="880" y="892">※ W 정확한 식은 확인 필요</text>
-          </a>
-          <path class="ln dash" d="M730 542 H858" marker-end="url(#ahi)"/>
-          <path class="ln dash" d="M730 654 H858" marker-end="url(#ahi)"/>
-          <path class="ln dash" d="M730 766 H858" marker-end="url(#ahi)"/>
-          <path class="ln dash" d="M730 878 H858" marker-end="url(#ahi)"/>
-          <text class="lbl" x="742" y="532">결과 채점</text>
-          <path class="ln ix" d="M1000 914 V1010 H712" marker-end="url(#ahi)"/>
-          <text class="lbl" x="800" y="1000">점수 S</text>
-        </svg>
-      </div>
-      <p class="swipe mono" aria-hidden="true">← 옆으로 밀어서 보기 →</p>
+      <p class="swipe mono" aria-hidden="true">← 옆으로 밀거나 드래그해서 보기 →</p>
       <div class="fc-scroll fc-scroll-h">
         <svg class="fc fc-h" viewBox="0 0 2880 450" role="img" aria-labelledby="fch-title">
           <title id="fch-title">가로로 그린 같은 흐름도. 제공 데이터에서 EDA, 전처리, 피처 엔지니어링, 모델링, 앙상블, 조합 최적화, 후처리를 거쳐 점수를 확인한 뒤 제출한다. 아래의 검증 설계 상자가 각 단계를 채점하고, 점수가 오르지 않으면 모델링으로 돌아간다.</title>
@@ -580,6 +495,20 @@ document.querySelectorAll('.fc a').forEach(a=>{
     if(d&&d.tagName==='DETAILS')d.open=true;
   });
 });
+
+// 마우스로 흐름도를 끌어서 옆으로 넘긴다 (끌었을 때는 상자 클릭 무시)
+(function(){
+  const sc=document.querySelector('.fc-scroll-h');if(!sc)return;
+  let down=false,moved=false,x0=0,l0=0;
+  sc.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse'||e.button!==0)return;
+    down=true;moved=false;x0=e.clientX;l0=sc.scrollLeft;});
+  window.addEventListener('pointermove',e=>{if(!down)return;const dx=e.clientX-x0;
+    if(Math.abs(dx)>4){moved=true;sc.classList.add('dragging');}
+    if(moved)sc.scrollLeft=l0-dx;});
+  window.addEventListener('pointerup',()=>{down=false;sc.classList.remove('dragging');});
+  sc.addEventListener('click',e=>{if(moved){e.preventDefault();e.stopPropagation();moved=false;}},true);
+  sc.addEventListener('dragstart',e=>e.preventDefault());
+})();
 
 // 픽셀아트 태양광 단지: 구름 그림자가 지나가며 출력이 변한다
 (function(){
