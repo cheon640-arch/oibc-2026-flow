@@ -396,11 +396,11 @@ footer p{margin:0;color:var(--muted);text-align:center}
         <details class="card" id="s1">
           <summary>
             <div class="c-top"><span class="c-num">01</span><span class="c-tag">준비</span></div>
-            <div class="sheet-wrap" data-k="1" aria-hidden="true"></div>
             <h3>EDA</h3><p class="c-one">데이터 생김새 훑어보기</p>
-            <span class="more">할 일 보기</span>
+            <span class="more">설명 보기</span>
           </summary>
           <div class="c-body">
+            <div class="sheet-wrap" data-k="1" aria-hidden="true"></div>
             <ul><li>파일마다 기간과 빈칸 확인</li><li>발전소마다 크기와 평소 발전량</li><li>예보 A·B 중 실제 날씨와 더 잘 맞는 쪽</li><li>전기값(SMP)이 비싼 시간대</li></ul>
             <div class="c-out"><span class="mono">결과물</span>eda.ipynb · 데이터 요약표</div>
           </div>
@@ -408,11 +408,11 @@ footer p{margin:0;color:var(--muted);text-align:center}
         <details class="card" id="s2">
           <summary>
             <div class="c-top"><span class="c-num">02</span><span class="c-tag">준비</span></div>
-            <div class="sheet-wrap" data-k="2" aria-hidden="true"></div>
             <h3>전처리</h3><p class="c-one">빈칸 채우고 이상한 값 정리</p>
-            <span class="more">할 일 보기</span>
+            <span class="more">설명 보기</span>
           </summary>
           <div class="c-body">
+            <div class="sheet-wrap" data-k="2" aria-hidden="true"></div>
             <ul><li>예보 빈칸 채우기 (빠진 시간도 채점하니 지우면 안 됨)</li><li>발전소 크기보다 큰 값, 고장 구간 정리</li><li>시간 맞추기: 01:00 값은 00~01시</li><li>전날 17시 이후 정보는 쓰지 않기</li></ul>
             <div class="c-out"><span class="mono">결과물</span>preprocess.py · 정리된 데이터</div>
           </div>
@@ -420,11 +420,11 @@ footer p{margin:0;color:var(--muted);text-align:center}
         <details class="card" id="s3">
           <summary>
             <div class="c-top"><span class="c-num">03</span><span class="c-tag">준비</span></div>
-            <div class="sheet-wrap" data-k="3" aria-hidden="true"></div>
             <h3>피처 엔지니어링</h3><p class="c-one">모델에 줄 힌트 만들기</p>
-            <span class="more">할 일 보기</span>
+            <span class="more">설명 보기</span>
           </summary>
           <div class="c-body">
+            <div class="sheet-wrap" data-k="3" aria-hidden="true"></div>
             <ul><li>해가 얼마나 높이 떠 있는지 (태양 고도)</li><li>맑은 날 받을 수 있는 최대 햇빛 양</li><li>발전량 ÷ 발전소 크기 (이용률)</li><li>예보 A·B, 10시·17시 예보 모두 활용</li></ul>
             <div class="c-out"><span class="mono">결과물</span>features.py</div>
           </div>
@@ -438,11 +438,11 @@ footer p{margin:0;color:var(--muted);text-align:center}
         <details class="card key" id="s4">
           <summary>
             <div class="c-top"><span class="c-num">04</span><span class="c-tag">채점기 · 핵심</span></div>
-            <div class="sheet-wrap" data-k="4" aria-hidden="true"></div>
             <h3>검증 설계 (채점기 만들기)</h3><p class="c-one">우리끼리 점수 매기는 도구</p>
-            <span class="more">할 일 보기</span>
+            <span class="more">설명 보기</span>
           </summary>
           <div class="c-body">
+            <div class="sheet-wrap" data-k="4" aria-hidden="true"></div>
             <ul><li>대회 점수식을 그대로 코드로 옮기기: 점수 S = 판매 수익 − 벌점 W</li><li>지난 기간 마지막 몇 주를 떼어 두고 시험지처럼 사용</li><li>처음 1~2번 제출해서 우리 점수와 리더보드가 같이 움직이는지 확인</li></ul>
             <div class="c-out"><span class="mono">결과물</span>scorer.py · 입력: 묶음 배정, 예측, 실제값 → 출력: 점수 S</div>
           </div>
@@ -456,11 +456,11 @@ footer p{margin:0;color:var(--muted);text-align:center}
         <details class="card" id="s5">
           <summary>
             <div class="c-top"><span class="c-num">05</span><span class="c-tag">예측</span></div>
-            <div class="sheet-wrap" data-k="5" aria-hidden="true"></div>
             <h3>모델링</h3><p class="c-one">발전소별 발전량 맞히기</p>
-            <span class="more">할 일 보기</span>
+            <span class="more">설명 보기</span>
           </summary>
           <div class="c-body">
+            <div class="sheet-wrap" data-k="5" aria-hidden="true"></div>
             <ul><li>기준 모델: 발전소 크기 × 예보 햇빛 양</li><li>LightGBM 같은 머신러닝 모델</li><li>전기값이 비싼 시간대를 더 정확히 맞히도록 학습</li><li>발전소별로 더하기 vs 묶음 전체를 바로 예측하기 비교</li></ul>
             <div class="c-out"><span class="mono">결과물</span>train.py · 예측 결과 (07에서 사용)</div>
           </div>
@@ -468,11 +468,11 @@ footer p{margin:0;color:var(--muted);text-align:center}
         <details class="card" id="s6">
           <summary>
             <div class="c-top"><span class="c-num">06</span><span class="c-tag">예측</span></div>
-            <div class="sheet-wrap" data-k="6" aria-hidden="true"></div>
             <h3>앙상블</h3><p class="c-one">여러 모델의 답을 섞기</p>
-            <span class="more">할 일 보기</span>
+            <span class="more">설명 보기</span>
           </summary>
           <div class="c-body">
+            <div class="sheet-wrap" data-k="6" aria-hidden="true"></div>
             <ul><li>예보 A로 만든 모델 + 예보 B로 만든 모델</li><li>종류가 다른 모델끼리 섞기</li><li>섞는 비율은 채점기 점수가 제일 좋은 쪽으로</li></ul>
             <div class="c-out"><span class="mono">결과물</span>ensemble.py</div>
           </div>
@@ -486,11 +486,11 @@ footer p{margin:0;color:var(--muted);text-align:center}
         <details class="card key" id="s7">
           <summary>
             <div class="c-top"><span class="c-num">07</span><span class="c-tag">최적화 · 핵심</span></div>
-            <div class="sheet-wrap" data-k="7" aria-hidden="true"></div>
             <h3>조합 최적화</h3><p class="c-one">253곳을 A·B 두 묶음으로 나누기</p>
-            <span class="more">할 일 보기</span>
+            <span class="more">설명 보기</span>
           </summary>
           <div class="c-body">
+            <div class="sheet-wrap" data-k="7" aria-hidden="true"></div>
             <ul><li>발전소마다 언제, 어느 방향으로 틀리는지 확인</li><li>같이 틀리는 발전소는 서로 다른 묶음에 나눠 담기</li><li>조금씩 바꿔 보며 점수가 오르는 쪽 찾기</li><li>다른 기간으로도 점수가 좋은지 다시 확인</li></ul>
             <div class="c-out"><span class="mono">결과물</span>partition.py · composition.csv</div>
           </div>
@@ -498,11 +498,11 @@ footer p{margin:0;color:var(--muted);text-align:center}
         <details class="card" id="s8">
           <summary>
             <div class="c-top"><span class="c-num">08</span><span class="c-tag">최적화</span></div>
-            <div class="sheet-wrap" data-k="8" aria-hidden="true"></div>
             <h3>후처리</h3><p class="c-one">말 안 되는 값 바로잡기</p>
-            <span class="more">할 일 보기</span>
+            <span class="more">설명 보기</span>
           </summary>
           <div class="c-body">
+            <div class="sheet-wrap" data-k="8" aria-hidden="true"></div>
             <ul><li>밤에는 발전량 0</li><li>발전소 크기보다 큰 값은 최대치로 자르기</li><li>묶음 전체가 계속 많게(적게) 나오면 보정</li></ul>
             <div class="c-out"><span class="mono">결과물</span>postprocess.py</div>
           </div>
@@ -516,11 +516,11 @@ footer p{margin:0;color:var(--muted);text-align:center}
         <details class="card" id="s9">
           <summary>
             <div class="c-top"><span class="c-num">09</span><span class="c-tag">제출</span></div>
-            <div class="sheet-wrap" data-k="9" aria-hidden="true"></div>
             <h3>제출</h3><p class="c-one">파일 내고 리더보드 확인</p>
-            <span class="more">할 일 보기</span>
+            <span class="more">설명 보기</span>
           </summary>
           <div class="c-body">
+            <div class="sheet-wrap" data-k="9" aria-hidden="true"></div>
             <ul><li>composition.csv와 묶음별 예측 CSV 제출</li><li>하루 3번, 대회 기간 전체 20번까지</li><li>무엇을 낼지는 리더보드보다 우리 채점기 점수로 결정</li></ul>
             <div class="c-out"><span class="mono">결과물</span>제출 파일 · 제출 기록표 (언제, 무엇을, 몇 점)</div>
           </div>
