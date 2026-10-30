@@ -48,6 +48,42 @@ header nav a:hover,header nav a:focus-visible{color:var(--indigo)}
 .meter b{font-family:var(--f-display);font-weight:400;font-size:44px;line-height:1;color:var(--indigo);font-variant-numeric:tabular-nums;min-width:3.4ch}
 #spark{width:200px;height:48px;display:block}
 
+/* guide button: paper block + indigo glyph square */
+.guide-open{justify-self:end;display:flex;align-items:stretch;border:0;padding:0;background:var(--paper);color:var(--ink);cursor:pointer;text-align:left;font:inherit}
+.guide-open .go-text{display:flex;flex-direction:column;gap:4px;padding:16px 22px}
+.guide-open .go-text .mono{color:var(--muted)}
+.guide-open b{font-family:var(--f-display);font-weight:500;font-size:24px;line-height:1.15}
+.guide-open i{font-style:normal;display:grid;place-items:center;width:72px;background:var(--indigo);color:var(--paper);font-family:var(--f-display);font-size:28px;transition:width .2s}
+.guide-open:hover i,.guide-open:focus-visible i{width:88px}
+.guide-open:focus-visible{outline:2px solid var(--indigo);outline-offset:3px}
+
+/* guide dialog */
+dialog#guide{border:0;padding:0;background:var(--bone);color:var(--ink);width:min(920px,calc(100vw - 32px),max(320px,calc((100dvh - 300px) * 16 / 9)));max-width:none;max-height:calc(100dvh - 32px);overflow:auto}
+dialog#guide::backdrop{background:rgba(13,19,85,.72)}
+.g-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 20px;border-bottom:1px solid var(--hair)}
+.g-head .mono{color:var(--deep)}
+.g-x{border:0;background:none;font-family:var(--f-mono);font-size:12px;letter-spacing:.04em;cursor:pointer;color:var(--ink);padding:6px 0}
+.g-x:hover,.g-x:focus-visible{color:var(--indigo)}
+.g-stage{position:relative;background:#e8e6e0}
+#gcv{display:block;width:100%;aspect-ratio:16/9;image-rendering:pixelated}
+.g-labels{position:absolute;inset:0;pointer-events:none}
+.g-labels span{position:absolute;transform:translate(-50%,-50%);font-family:var(--f-body);font-weight:500;font-size:clamp(11px,1.7vw,15px);white-space:nowrap;background:rgba(232,230,224,.9);padding:1px 6px;color:var(--ink)}
+.g-labels span.ix{color:var(--indigo)} .g-labels span.pen{color:#b8461a} .g-labels span.l{transform:translate(0,-50%)}
+.g-text{padding:22px 20px 6px;display:grid;gap:8px}
+.g-text .mono{color:var(--muted)}
+.g-text h3{margin:0;font-family:var(--f-display);font-weight:400;font-size:clamp(24px,3.4vw,32px);line-height:1.15;color:var(--indigo);text-wrap:balance}
+.g-text p{margin:0;font-size:17px;max-width:60ch;text-wrap:pretty}
+.g-nav{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 20px 20px;flex-wrap:wrap}
+.g-dots{display:flex;gap:8px}
+.g-dots button{width:12px;height:12px;border:1px solid var(--ink);background:transparent;padding:0;cursor:pointer}
+.g-dots button[aria-current="step"]{background:var(--indigo);border-color:var(--indigo)}
+.g-btns{display:flex;gap:10px}
+.g-btn{display:flex;align-items:stretch;border:0;padding:0;background:var(--paper);color:var(--ink);cursor:pointer;font-family:var(--f-mono);font-size:12px;letter-spacing:.04em}
+.g-btn span{padding:11px 14px}
+.g-btn i{font-style:normal;display:grid;place-items:center;width:38px;background:var(--indigo);color:var(--paper);font-size:14px}
+.g-btn:disabled{opacity:.35;cursor:default}
+.g-btn:focus-visible,.g-dots button:focus-visible{outline:2px solid var(--indigo);outline-offset:2px}
+
 /* flowchart plate */
 .plate{margin-top:40px;border-top:1px solid var(--ink);padding-top:12px}
 .plate-head{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;color:var(--muted)}
@@ -136,6 +172,9 @@ footer p{margin:0;color:var(--muted);text-align:center}
   .hero,.pair,.rules{grid-template-columns:1fr}
   .hero{gap:20px}
   .pixel-bar{grid-template-columns:1fr}
+  .guide-open{justify-self:stretch}
+  .guide-open .go-text{flex:1}
+  .g-text p{font-size:16px}
   #spark{width:150px}
   .pair > div + div{border-left:0;padding-left:0;border-top:1px solid var(--hair-on-indigo)}
   .sched{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -166,6 +205,10 @@ footer p{margin:0;color:var(--muted);text-align:center}
   <div class="wrap">
     <div class="hero">
       <h1>작업<br><span>흐름도</span></h1>
+      <button type="button" class="guide-open" id="guide-open" aria-haspopup="dialog">
+        <span class="go-text"><span class="mono">처음 보는 사람용 · 6장</span><b>대회 쉽게 이해하기</b></span>
+        <i aria-hidden="true">→</i>
+      </button>
     </div>
 
     <figure class="pixel" style="margin-inline:0;margin-bottom:0">
@@ -421,6 +464,29 @@ footer p{margin:0;color:var(--muted);text-align:center}
   <div class="wrap"><p class="mono">Source / dataen.ai/challenge · 2026 OIBC 경진대회 공개 페이지 기준</p></div>
 </footer>
 
+<dialog id="guide" aria-labelledby="g-title">
+  <div class="g-head">
+    <span class="mono">대회 쉽게 이해하기</span>
+    <button type="button" class="g-x" id="g-close">닫기 ×</button>
+  </div>
+  <div class="g-stage">
+    <canvas id="gcv" width="160" height="90" aria-hidden="true"></canvas>
+    <div class="g-labels" id="g-labels"></div>
+  </div>
+  <div class="g-text">
+    <span class="mono" id="g-step">1 / 6</span>
+    <h3 id="g-title"></h3>
+    <p id="g-body"></p>
+  </div>
+  <div class="g-nav">
+    <div class="g-dots" id="g-dots"></div>
+    <div class="g-btns">
+      <button type="button" class="g-btn" id="g-prev"><i aria-hidden="true">←</i><span>이전</span></button>
+      <button type="button" class="g-btn" id="g-next"><span>다음</span><i aria-hidden="true">→</i></button>
+    </div>
+  </div>
+</dialog>
+
 <script>
 // 흐름도 상자를 누르면 해당 단계를 펼친다
 document.querySelectorAll('.fc a').forEach(a=>{
@@ -517,6 +583,130 @@ document.querySelectorAll('.fc a').forEach(a=>{
       requestAnimationFrame(loop);
     })(0);
   };
+})();
+
+// 대회 쉽게 이해하기: 6장짜리 픽셀 애니메이션 설명
+(function(){
+  const dlg=document.getElementById('guide'),cv=document.getElementById('gcv'),ctx=cv.getContext('2d');
+  const labels=document.getElementById('g-labels'),dots=document.getElementById('g-dots');
+  const prev=document.getElementById('g-prev'),next=document.getElementById('g-next');
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const C={bg:'#e8e6e0',ink:'#0d1355',ind:'#1925aa',pb:'#3a5bb5',pl:'#8aa4e6',grass:'#6b8a2f',grassD:'#58731f',
+           sun:'#f3c234',sunD:'#d9971c',cloud:'#ffffff',cloudS:'#c3c6d2',pen:'#e0662f',paper:'#ffffff',hair:'#b4b1a8'};
+  const R=(x,y,w,h,c)=>{ctx.fillStyle=c;ctx.fillRect(Math.round(x),Math.round(y),w,h);};
+  const E=t=>t<=0?0:t>=1?1:t*t*(3-2*t);
+  const disc=(x,y,r,c)=>{for(let dy=-r;dy<=r;dy++){const w=Math.round(Math.sqrt(r*r-dy*dy));R(x-w,y+dy,2*w+1,1,c);}};
+  const panel=(x,y)=>{R(x,y,7,5,C.ink);R(x+1,y+1,5,3,C.pb);R(x+3,y+1,1,3,C.pl);R(x+1,y+2,5,1,C.pl);};
+  const sun=(x,y,t)=>{disc(x,y,4,C.sun);R(x-1,y-1,2,2,'#fbe08a');
+    if(Math.floor(t*2)%2===0){R(x-8,y,2,1,C.sunD);R(x+7,y,2,1,C.sunD);R(x,y-8,1,2,C.sunD);R(x,y+7,1,2,C.sunD);}
+    else{R(x-6,y-6,1,1,C.sunD);R(x+6,y-6,1,1,C.sunD);R(x-6,y+6,1,1,C.sunD);R(x+6,y+6,1,1,C.sunD);}};
+  const cloud=(x,y)=>{disc(x+1,y+1,3,C.cloudS);disc(x+5,y-1,4,C.cloudS);disc(x+10,y+1,3,C.cloudS);
+    disc(x,y,3,C.cloud);disc(x+4,y-2,4,C.cloud);disc(x+9,y,3,C.cloud);R(x,y,10,4,C.cloud);};
+  const grass=()=>{R(0,22,160,68,C.grass);for(let i=0;i<260;i++){const x=(i*37)%160,y=22+((i*53)%68);R(x,y,1,1,C.grassD);}};
+  const bell=u=>Math.max(0,Math.sin(Math.PI*u));
+  // 묶음 배정 (고정된 섞기)
+  const assign=Array.from({length:40},(_,i)=>((i*7+3)%40)<20?0:1);
+
+  const scenes=[
+    {title:'작은 발전소가 아주 많아요',
+     body:'전국에 작은 태양광 발전소 253곳이 있어요. 하나하나는 너무 작아서 혼자서는 전력 시장에 전기를 팔 수 없어요. 시장에 들어가려면 최소 20MW가 필요하거든요.',
+     period:6,labels:[{x:17,y:12,t:'작은 발전소 253곳',c:'l'}],
+     draw(t){R(0,0,160,90,C.bg);grass();sun(146,11,t);
+       const n=Math.min(60,Math.floor(t*22));
+       for(let i=0;i<n;i++){const c=i%12,r=Math.floor(i/12);panel(10+c*12,28+r*12);}}},
+    {title:'그래서 두 묶음으로 나눠요',
+     body:'253곳을 묶음 A와 묶음 B 두 개로 나눠 담아요. 한 곳도 빠지면 안 되고, 어느 발전소를 어느 묶음에 넣을지는 우리가 정해요. 이게 첫 번째 숙제예요.',
+     period:6.5,labels:[{x:25,y:93,t:'묶음 A',c:'ix'},{x:75,y:93,t:'묶음 B',c:'ix'}],
+     draw(t){R(0,0,160,90,C.bg);
+       for(const bx of [6,86]){R(bx,26,68,1,C.ind);R(bx,78,68,1,C.ind);R(bx,26,1,53,C.ind);R(bx+67,26,1,53,C.ind);}
+       const slot=[0,0];
+       for(let i=0;i<40;i++){const a=assign[i],k=slot[a]++;
+         const sx=24+(i%10)*11,sy=2+Math.floor(i/10)*5;
+         const tx=(a?90:10)+(k%5)*12,ty=32+Math.floor(k/5)*11;
+         const p=E((t-0.6-i*0.05)/0.8);
+         panel(sx+(tx-sx)*p,sy+(ty-sy)*p-Math.sin(p*Math.PI)*6);}}},
+    {title:'하루 전에 내일을 예측해요',
+     body:'전날 오후 5시까지 나온 날씨 예보만 보고, 다음 날 묶음별로 시간마다 전기가 얼마나 나올지 예측해요. 이게 두 번째 숙제예요.',
+     period:6.5,labels:[{x:18,y:82,t:'전날 17:00'},{x:70,y:10,t:'내일 시간별 발전량 예측',c:'ix'}],
+     draw(t){R(0,0,160,90,C.bg);
+       disc(28,46,13,C.ink);disc(28,46,11,C.paper);
+       for(let h=0;h<12;h++){const a=h/12*Math.PI*2;R(28+Math.sin(a)*9.5,46-Math.cos(a)*9.5,1,1,C.ink);}
+       R(28,38,1,8,C.ink);
+       for(let k=1;k<=6;k++)R(28+Math.sin(Math.PI*5/6)*k,46-Math.cos(Math.PI*5/6)*k,1,1,C.ink);
+       R(27,45,3,3,C.ind);
+       sun(14,18,t);cloud(30+Math.sin(t*1.5)*2,15);
+       const ax=50+Math.round(Math.sin(t*4)*1);R(ax,46,7,1,C.ind);R(ax+5,45,1,3,C.ind);R(ax+6,46,1,1,C.ind);
+       R(64,78,92,1,C.ink);
+       const n=Math.min(14,Math.floor(Math.max(0,t-0.5)*5));
+       for(let i=0;i<n;i++){const h=Math.round(52*bell((i+0.5)/14));R(67+i*6,78-h,5,h,C.ind);R(67+i*6,78-h,5,1,C.pl);}}},
+    {title:'틀린 만큼 벌점을 받아요',
+     body:'다음 날 실제 발전량과 예측을 비교해요. 구름이 끼어서 예측보다 덜 나오면 그 차이만큼 벌점이 생겨요. 전기값(SMP)이 비싼 시간에 틀리면 벌점도 더 커요.',
+     period:7,labels:[{x:6,y:8,t:'━ 예측',c:'l ix'},{x:6,y:18,t:'━ 실제',c:'l'},{x:6,y:28,t:'■ 벌점',c:'l pen'}],
+     draw(t){R(0,0,160,90,C.bg);R(12,80,138,1,C.ink);
+       const u=E(t/4.5),x0=14,x1=148,cut=x0+(x1-x0)*u;
+       const pred=v=>80-58*bell(v);
+       const act=v=>{const d=Math.exp(-Math.pow((v-.56)/.07,2));return 80-58*bell(v)*(1-.55*d);};
+       for(let x=x0;x<=cut;x++){const v=(x-x0)/(x1-x0),py=Math.round(pred(v)),ay=Math.round(act(v));
+         if(ay>py+1)R(x,py+1,1,ay-py-1,C.pen);
+         R(x,py,1,1,C.ind);R(x,ay,1,1,C.ink);}
+       sun(140,12,t);
+       if(u>.35){const cx=x0+(x1-x0)*.56-5;cloud(cx,8);if(Math.floor(t*6)%2)R(cx+3,14,1,2,C.cloudS);}
+       if(u<1)R(cut,20,1,60,C.hair);}},
+    {title:'틀린 게 서로 지워지게 묶어요',
+     body:'A는 예측보다 덜 나오고 B는 더 나오면, 같은 묶음 안에서는 합계가 거의 맞아요. 벌점은 묶음 합계로 매기니까, 반대로 틀리는 발전소끼리 묶으면 벌점이 줄어요.',
+     period:0,labels:[{x:19,y:93,t:'A 발전소 오차'},{x:50,y:93,t:'B 발전소 오차'},{x:81,y:93,t:'A+B 묶음 합계',c:'ix'}],
+     draw(t){R(0,0,160,90,C.bg);
+       const a=-Math.sin(t*1.7)*26,b=Math.sin(t*1.7)*23+Math.sin(t*3.3)*2,s=a+b;
+       const col=(cx,v,c)=>{R(cx-18,50,36,1,C.hair);if(v>=0)R(cx-6,50-v,12,Math.max(1,Math.round(v)),c);else R(cx-6,51,12,Math.max(1,Math.round(-v)),c);};
+       col(30,a,C.ind);col(80,b,C.ind);col(130,s,C.pen);
+       panel(27,8);panel(77,8);panel(122,8);panel(131,8);
+       R(57,48,6,1,C.ink);R(59,46,1,5,C.ink);R(105,47,6,1,C.ink);R(105,50,6,1,C.ink);}},
+    {title:'우리가 낼 것은 파일 2개',
+     body:'어느 발전소를 어느 묶음에 넣었는지 적은 파일과 묶음별 예측 파일을 내요. 벌점이 적을수록 점수 S가 높아지고, 점수가 높은 순서로 순위가 정해져요.',
+     period:6,labels:[{x:28,y:74,t:'composition.csv'},{x:72,y:74,t:'예측 CSV'},{x:50,y:90,t:'하루 3번 · 총 20번 제출',c:'ix'}],
+     draw(t){R(0,0,160,90,C.bg);
+       const doc=(x,y)=>{R(x,y,26,32,C.ink);R(x+1,y+1,24,30,C.paper);R(x+18,y+1,7,7,C.bg);R(x+18,y+7,7,1,C.ink);R(x+18,y+1,1,7,C.ink);
+         for(let k=0;k<5;k++)R(x+4,y+12+k*4,k%2?12:17,1,C.pl);};
+       const p1=E((t-.2)/.5),p2=E((t-.8)/.5);
+       if(p1>0)doc(32,14+(1-p1)*14);
+       if(p2>0)doc(102,14+(1-p2)*14);
+       if(t>1.4){for(let i=0;i<3;i++){const s=Math.abs(Math.sin(t*3+i*2));R(70+i*8,30-s*4,2,2,C.sun);}
+         R(76,46,9,1,C.ind);R(80,42,1,9,C.ind);}}}
+  ];
+
+  let cur=0,start=0,raf=0;
+  scenes.forEach((s,i)=>{const b=document.createElement('button');b.type='button';b.setAttribute('aria-label',(i+1)+'번째 장');
+    b.addEventListener('click',()=>go(i));dots.appendChild(b);});
+  function go(i){
+    cur=Math.max(0,Math.min(scenes.length-1,i));start=performance.now();
+    const s=scenes[cur];
+    document.getElementById('g-step').textContent=(cur+1)+' / '+scenes.length;
+    document.getElementById('g-title').textContent=s.title;
+    document.getElementById('g-body').textContent=s.body;
+    labels.innerHTML='';
+    s.labels.forEach(l=>{const e=document.createElement('span');e.textContent=l.t;if(l.c)e.className=l.c;
+      e.style.left=l.x+'%';e.style.top=l.y+'%';labels.appendChild(e);});
+    [...dots.children].forEach((d,k)=>{if(k===cur)d.setAttribute('aria-current','step');else d.removeAttribute('aria-current');});
+    prev.disabled=cur===0;
+    next.querySelector('span').textContent=cur===scenes.length-1?'처음으로':'다음';
+    if(reduce)render(scenes[cur].period?scenes[cur].period-.01:1);
+  }
+  function render(t){scenes[cur].draw(t);}
+  function loop(now){
+    const s=scenes[cur];let t=(now-start)/1000;
+    if(s.period)t=t%s.period;
+    render(t);raf=requestAnimationFrame(loop);
+  }
+  function open(){go(0);if(dlg.showModal)dlg.showModal();else dlg.setAttribute('open','');
+    if(!reduce){cancelAnimationFrame(raf);raf=requestAnimationFrame(loop);}}
+  function close(){dlg.close?dlg.close():dlg.removeAttribute('open');}
+  dlg.addEventListener('close',()=>cancelAnimationFrame(raf));
+  document.getElementById('guide-open').addEventListener('click',open);
+  document.getElementById('g-close').addEventListener('click',close);
+  dlg.addEventListener('click',e=>{if(e.target===dlg)close();});
+  prev.addEventListener('click',()=>go(cur-1));
+  next.addEventListener('click',()=>go(cur===scenes.length-1?0:cur+1));
+  dlg.addEventListener('keydown',e=>{if(e.key==='ArrowRight')go(cur+1);if(e.key==='ArrowLeft')go(cur-1);});
 })();
 </script>
 </body>
